@@ -7,6 +7,7 @@ body {
 li {
     font-size: 18px;
     padding-bottom: 0.5rem;
+    word-wrap: break-word;
 }
 
 article {
