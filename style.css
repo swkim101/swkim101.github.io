@@ -13,3 +13,16 @@ li {
 article {
     max-width: max(1024px, 80vw);
 }
+
+@media (prefers-color-scheme: dark) {
+    body {
+        color: #ffffff;
+        background-color: #202124;
+    }
+    a {
+        color: #8ab4f8;
+    }
+    a:visited {
+        color: #c58af9;
+    }
+}
