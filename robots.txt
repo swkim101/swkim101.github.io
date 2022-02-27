@@ -1,3 +1,5 @@
+Sitemap: https://swkim101.github.io/sitemap.xml
+
 User-Agent: *
 Allow: /
 
