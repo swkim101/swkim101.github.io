@@ -58,3 +58,24 @@ article {
     max-width: 1320px;
   }
 }
+
+
+.bibtex-wrapper {
+  background-color: #f8f9fa;
+  height: 2.5em;
+  overflow-y: scroll;
+  cursor: pointer;
+  padding: 0px 4px;
+}
+
+.bibtex-wrapper:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.bibtex-wrapper:active {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.bibtex {
+  font-size: 14px;
+}

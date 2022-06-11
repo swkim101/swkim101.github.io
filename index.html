@@ -131,6 +131,27 @@
               <a href="https://swkim101.github.io/pub/ShadowAuth__ASIACCS_22_.pdf">[PDF]</a>
               <a href="https://doi.org/10.1145/3488932.3523263">[DOI]</a>
               <a href="https://github.com/purseclab/ShadowAuth">[CODE]</a>
+              <div title="click to copy" class="bibtex-wrapper" id="bibtex-shadowauth" onclick="handle('#bibtex-shadowauth')">
+                <code class="bibtex" tabindex="0">
+@inproceedings{10.1145/3488932.3523263,
+  author = {Kim, Sungwoo and Yeo, Gisu and Kim, Taegyu and Rhee, Junghwan "John" and Jeon, Yuseok and Bianchi, Antonio and Xu, Dongyan and Tian, Dave (Jing)},
+  title = {ShadowAuth: Backward-Compatible Automatic CAN Authentication for Legacy ECUs},
+  year = {2022},
+  isbn = {9781450391405},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3488932.3523263},
+  doi = {10.1145/3488932.3523263},
+  booktitle = {Proceedings of the 2022 ACM on Asia Conference on Computer and Communications Security},
+  pages = {534–545},
+  numpages = {12},
+  keywords = {control area network, electronic control unit, authentication, binary analysis},
+  location = {Nagasaki, Japan},
+  series = {ASIA CCS '22}
+}
+                </code>
+              </div>
+              <div id="bibtex-shadowauth-status"></div>
             </div>
           </li>
       </ol>
@@ -144,5 +165,37 @@
             </a>
         </p>
     </footer>
+
+    <script>
+      const counter = {};
+      const messages = [
+        'copied',
+        'copied!',
+        'copied!!!!!',
+        'Bibtex is copied well !!!!!',
+        'I SAID IT IS COPIED!! YOU ARE GOOD TO GO :)',
+        'HEY STOP',
+        'WHAT DO YOU WANT?',
+        'YOU ARE MAKING ME ANNOYING :(',
+        'PLEASE STOP...',
+        'Exception in thread "main": java.lang.NullPointerException',
+        'Did you just ignore the NullPointerException?',
+        'IT IS OFFICIAL WARNING - STOP CLICKING AND GO GRAP YOUR DINNER',
+        'I WARNED YOU',
+        'FINAL WARNING..!',
+        'SUPER FINAL IRREVOCABLE DANGEROURS WARNING!!'
+      ]
+      function handle(id) {
+        const dom = document.querySelector(id)
+        navigator.clipboard.writeText(dom.innerText);
+        counter[id] = id in counter ? counter[id] + 1 : 0;
+        const messageid = counter[id]
+        if (messageid >= messages.length) {
+          document.location = 'https://www.paypal.com/donate/?business=SDV9F3EXKMZK8&amount=1&no_recurring=1&item_name=I+call+your+bluff&currency_code=USD'
+        } else {
+          document.querySelector(`${id}-status`).innerText = messages[messageid]
+        }
+      }
+    </script>
 </body>
 </html>
