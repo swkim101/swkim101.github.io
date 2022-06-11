@@ -61,7 +61,7 @@ article {
 
 
 .bibtex-wrapper {
-  background-color: #f8f9fa;
+  background-color: rgba(0, 0, 0, 0.1);
   height: 2.5em;
   overflow-y: scroll;
   cursor: pointer;
