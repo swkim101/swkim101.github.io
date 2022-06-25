@@ -1,4 +1,4 @@
-Sitemap: https://swkim101.github.io/sitemap.xml
+Sitemap: https://sung-woo.kim/sitemap.xml
 
 User-Agent: *
 Allow: /
