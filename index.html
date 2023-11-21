@@ -62,7 +62,7 @@
         <hr>
     </header>
     <section>
-      <div><i>This site does not collect any information from users</i></div>
+      <div><i>This site does not track users</i></div>
       <h2>Publications</h2>
       <ol>
           <li>
@@ -82,6 +82,27 @@
             <div>
               Anaheim, CA, August 2023 (Acceptance Rate: <em>29.2%</em>)
             </div>
+            <div>
+              <!-- [BibTex] -->
+              <a href="https://www.usenix.org/system/files/usenixsecurity23-kim-kyungtae.pdf">[PDF📃]</a>
+              <a href="https://github.com/purseclab/fuzzpd">[CODE💻]</a>
+              <div title="click to copy" class="bibtex-wrapper" id="bibtex-fuzzpd" onclick="handle('#bibtex-fuzzpd')">
+                <code class="bibtex" tabindex="0">
+@inproceedings {290985,
+  author = {Kyungtae Kim and Sungwoo Kim and Kevin R. B. Butler and Antonio Bianchi and Rick Kennell and Dave (Jing) Tian},
+  title = {Fuzz The Power: Dual-role State Guided Black-box Fuzzing for {USB} Power Delivery},
+  booktitle = {32nd USENIX Security Symposium (USENIX Security 23)},
+  year = {2023},
+  isbn = {978-1-939133-37-3},
+  address = {Anaheim, CA},
+  pages = {5845--5861},
+  url = {https://www.usenix.org/conference/usenixsecurity23/presentation/kim-kyungtae},
+  publisher = {USENIX Association},
+  month = aug
+  }
+                </code>
+              </div>
+              <div id="bibtex-fuzzpd-status"></div>
           </li>
           <li>
             <div>
@@ -165,34 +186,10 @@
     </footer>
 
     <script>
-      const counter = {};
-      const messages = [
-        'copied',
-        'copied!',
-        'copied!!!!!',
-        'Bibtex is copied well !!!!!',
-        'I SAID IT IS COPIED!! YOU ARE GOOD TO GO :)',
-        'HEY STOP',
-        'WHAT DO YOU WANT?',
-        'YOU ARE MAKING ME ANNOYING :(',
-        'PLEASE STOP...',
-        'Exception in thread "main": java.lang.NullPointerException',
-        'Did you just ignore the NullPointerException?',
-        'IT IS AN OFFICIAL WARNING - STOP CLICKING AND GO GET YOUR DINNER',
-        'I WARNED YOU',
-        'FINAL WARNING..!',
-        'SUPER FINAL IRREVOCABLE DANGEROUS WARNING!!'
-      ]
       function handle(id) {
         const dom = document.querySelector(id)
         navigator.clipboard.writeText(dom.innerText);
-        counter[id] = id in counter ? counter[id] + 1 : 0;
-        const messageid = counter[id]
-        if (messageid >= messages.length) {
-          document.location = 'https://www.paypal.com/donate/?business=SDV9F3EXKMZK8&amount=1&no_recurring=1&item_name=I+call+your+bluff&currency_code=USD'
-        } else {
-          document.querySelector(`${id}-status`).innerText = messages[messageid]
-        }
+        document.querySelector(`${id}-status`).innerText = 'copied';
       }
     </script>
 </body>
