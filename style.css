@@ -1,5 +1,22 @@
+
+:root {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+}
+
 body {
     font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: hsl(var(--background));
+    color: rgb(55 65 81);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: hsl(var(--foreground));
+}
+
+a {
+  color: rgb(30 64 175);
 }
 
 li {
