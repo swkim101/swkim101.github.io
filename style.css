@@ -34,6 +34,9 @@ article {
         color: #ffffff;
         background-color: #202124;
     }
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff;
+    }
     a {
         color: #8ab4f8;
     }
