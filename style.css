@@ -46,7 +46,7 @@ article {
 }
 
 .container {
-  width: 100%;
+  width: 90vw;
   padding-right: 0.75rem;
   padding-left: 0.75rem;
   margin-right: auto;
@@ -98,4 +98,8 @@ article {
 
 .bibtex {
   font-size: 14px;
+}
+
+.w-100 {
+  width: 100%;
 }

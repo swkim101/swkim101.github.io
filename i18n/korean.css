@@ -1,0 +1,16 @@
+body {
+  font-family: "Noto Sans KR", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.box {
+  padding: 2px 0px;
+  background-color: #efefef;
+}
+
+hr {
+  color: #ffffff;
+}
+
+.empty {
+  height: 25vh;
+}
