@@ -103,3 +103,10 @@ article {
 .w-100 {
   width: 100%;
 }
+
+summary h2 {
+  cursor: pointer;
+  display: inline;
+  margin: 0;
+  font-size: 1.5em;
+}
