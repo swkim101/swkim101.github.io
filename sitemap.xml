@@ -9,13 +9,34 @@
 
 <url>
   <loc>https://sung-woo.kim/</loc>
-  <lastmod>2022-02-27T00:59:40+00:00</lastmod>
+  <lastmod>2025-11-26T00:59:40+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
   <loc>https://sung-woo.kim/cv.pdf</loc>
-  <lastmod>2022-02-27T00:59:40+00:00</lastmod>
+  <lastmod>2025-11-26T00:59:40+00:00</lastmod>
   <priority>0.80</priority>
+</url>
+
+<url>
+  <loc>https://sung-woo.kim/b/syz-xnu/index.html</loc>
+  <lastmod>2026-03-23T00:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sung-woo.kim/b/syz-xnu/build-xnu.html</loc>
+  <lastmod>2026-03-23T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://sung-woo.kim/b/syz-xnu/new-syscalls.html</loc>
+  <lastmod>2026-03-23T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://sung-woo.kim/b/syz-xnu/bugs.html</loc>
+  <lastmod>2026-03-23T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
 </url>
 
 
