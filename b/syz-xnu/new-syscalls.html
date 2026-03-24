@@ -39,7 +39,7 @@
     <main>
         <article class="markdown-content">
 <h1>Support new syscalls</h1>
-<p>Last updated: Mar. 23, 2026 by Sungwoo Kim.</p>
+<p>Last updated: Mar. 24, 2026 by Sungwoo Kim. (<a href="https://github.com/swkim101/swkim101.github.io/commits/main/b/syz-xnu/new-syscalls.html">Changelog</a>)</p>
 <p><a href="./index.html">Return to the index</a></p>
 <p>XNU is a hybrid kernel composed of BSD (POSIX interface) and Mach (RPC layer). Although Syzkaller supports XNU syscall fuzzing, its coverage is limited to the legacy BSD surface and leaves most Mach and newly introduced BSD syscalls uncovered. As a result, vulnerabilities in Mach and newer BSD interfaces are easily missed. To cover these paths, Syzkaller must be provided with accurate syscall descriptions in syzlang.</p>
 <p>Automatically converting syscalls to syzlang is a known challenge<sup id="fnref:auto"><a href="#fn:auto" class="footnote-ref">1</a></sup>. While several studies<sup id="fnref:ksg"><a href="#fn:ksg" class="footnote-ref">2</a></sup><sup id="fnref:syzgen"><a href="#fn:syzgen" class="footnote-ref">3</a></sup><sup id="fnref:syzgen2"><a href="#fn:syzgen2" class="footnote-ref">4</a></sup><sup id="fnref:moonshine"><a href="#fn:moonshine" class="footnote-ref">5</a></sup> proposed automatic extraction using profiling, symbolic execution, and static analysis, their implementations are no longer maintained and are not compatible with current kernels. I therefore developed a new tool with generality as a primary design goal, so it remains compatible across multiple XNU versions, including future releases where possible.</p>

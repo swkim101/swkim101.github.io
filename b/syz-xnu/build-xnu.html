@@ -39,6 +39,7 @@
     <main>
         <article class="markdown-content">
 <h1 id="sec-1">Build the XNU kernel</h1>
+<p>Last updated: Mar. 24, 2026 by Sungwoo Kim. (<a href="https://github.com/swkim101/swkim101.github.io/commits/main/b/syz-xnu/build-xnu.html">Changelog</a>)</p>
 <p><a href="./index.html">Return to the index</a></p>
 <p>Apple provides a pre-built XNU kernel with sanitizers in Kernel Debug Kits<sup id="fnref:devapple"><a href="#fn:devapple" class="footnote-ref">1</a></sup>. However, these builds enable sanitizers only and do not provide KCOV instrumentation. Fuzzing without KCOV is *technically* possible, but performance is severely limited. To address this, XNU must be rebuilt with KCOV enabled.</p>
 <p>⚠️ In order to build a kernel, three versions should match: macOS version == xnu source code version == KDK version. Apple may not release the corresponding XNU source or KDK for the latest macOS release. In that case, the build will fail. At the time of writing, the latest macOS version is 26.3, but the matching XNU source and KDK are not yet available. Therefore, building XNU for the latest macOS is currently not feasible.</p>

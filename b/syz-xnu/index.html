@@ -39,10 +39,10 @@
     <main>
         <article class="markdown-content">
 <h1>syzkaller-xnu</h1>
-<p>Last updated: Mar. 23, 2026 by Sungwoo Kim.</p>
+<p>Last updated: Mar. 24, 2026 by Sungwoo Kim. (<a href="https://github.com/swkim101/swkim101.github.io/commits/main/b/syz-xnu/index.html">Changelog</a>)</p>
 <p>Syzkaller<sup id="fnref:syzkaller"><a href="#fn:syzkaller" class="footnote-ref">1</a></sup> has discovered 1,000+ bugs across multiple operating systems, including Apple&#x27;s XNU kernel. However, the last update to XNU support was five years ago (for macOS 11.5) and no longer works on recent kernels. In addition, it mainly covers legacy system calls, leaving Mach and newly introduced system calls largely uncovered.</p>
 <p>I therefore extended Syzkaller to support recent XNU kernels, including Mach system calls. The two primary technical challenges were (1) building XNU with KCOV and sanitizers, and (2) automatically extracting syscall descriptions. Challenge (1) is an engineering task, and <a href="./build-xnu.html">this</a> documents the workflow and operational tips. For (2), I developed a transpiler that automatically converts system call definitions into syzlang. <a href="./new-syscalls.html">This</a> describes the design and limitations.</p>
-<p>As a result, I ran Syzkaller on macOS 15.x in emulation and identified five previously unknown bugs. I reported these issues to Apple about six months ago, and three bugs are now fixed. <a href="./bugs.html">This</a> provides the bug analysis.</p>
+<p>As a result, I ran Syzkaller on macOS 15.x in emulation and identified five previously unknown bugs. I reported these issues to Apple. Three bugs have been fixed, and two are still being fixed. <a href="./bugs.html">This</a> provides the bug analysis.</p>
 <p>Source code is availabe at <a href="https://github.com/swkim101/syz-xnu">https://github.com/swkim101/syz-xnu</a></p>
 <p>Index:</p>
 <ol>
