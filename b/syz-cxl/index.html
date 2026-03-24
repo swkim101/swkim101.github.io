@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Minimal CXL driver fuzzing with Syzkaller">
+
+  <!-- Facebook Meta Tags -->
+  <meta property="og:url" content="https://sung-woo.kim/b/syz-cxl/index.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="syz-cxl">
+  <meta property="og:description" content="Minimal CXL driver fuzzing with Syzkaller">
+  <meta property="og:site_name" content="Minimal CXL driver fuzzing with Syzkaller">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image" content="https://sung-woo.kim/og.jpg">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="Minimal CXL driver fuzzing with Syzkaller">
+  <meta property="twitter:domain" content="sung-woo.kim">
+  <meta property="twitter:url" content="https://sung-woo.kim/b/syz-cxl/index.html">
+  <meta name="twitter:title" content="syz-cxl">
+  <meta name="twitter:description" content="Minimal CXL driver fuzzing with Syzkaller">
+  <meta name="twitter:image" content="https://sung-woo.kim/og.jpg">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>syz-cxl</title>
+  <link rel="stylesheet" href="../markdown.css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+</head>
+<body>
+    <main>
+        <article class="markdown-content">
+<h1>syz-cxl</h1>
+<p>Compute Express Link (CXL) enables access to memory over PCIe. This can reduce the total cost of ownership (TCO) for public cloud services through memory recycling, sharing, and tiering<sup id="fnref:memstrata"><a href="#fn:memstrata" class="footnote-ref">1</a></sup>.</p>
+<p>The concept sounded interesting to me, so I decided to build a CXL fuzzer because I believe breaking things is one of the fastest ways to learn. I extended Syzkaller to support CXL. Instead of writing the CXL syscall grammar manually, I let an LLM handle it and observed the results. The main idea was to feed libcxl source code and strace logs to an LLM, hoping they would provide enough hints. As a result, LLM (Claude Opus 4.6) generated 37 valid syscalls. Using this, Syzkaller achieved 6% CXL driver code coverage and identified two previously unknown bugs. I have published the Syzkaller patch, CXL grammar, and prompt here: <a href="https://github.com/swkim101/syz-cxl">https://github.com/swkim101/syz-cxl</a></p>
+<p>Bugs:</p>
+<ul>
+  <li><a href="https://lore.kernel.org/linux-cxl/20260308185958.2453707-2-iam@sung-woo.kim/">https://lore.kernel.org/linux-cxl/20260308185958.2453707-2-iam@sung-woo.kim/</a></li>
+  <li><a href="https://lore.kernel.org/linux-cxl/20260309000810.2632065-2-iam@sung-woo.kim/">https://lore.kernel.org/linux-cxl/20260309000810.2632065-2-iam@sung-woo.kim/</a></li>
+</ul>
+<section class="footnotes">
+<hr />
+<ol>
+  <li id="fn:memstrata"><a href="https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf">https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf</a> <a href="#fnref:memstrata" class="footnote-backref" aria-label="Back to content">back</a></li>
+</ol>
+</section>
+        </article>
+    </main>
+</body>
+</html>
