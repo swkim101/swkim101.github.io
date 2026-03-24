@@ -1,5 +1,5 @@
 Sitemap: https://sung-woo.kim/sitemap.xml
 
-User-Agent: *
+User-agent: *
 Allow: /
 
