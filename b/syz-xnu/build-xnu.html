@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Running Syzkaller against XNU kernel">
+
+  <!-- Facebook Meta Tags -->
+  <meta property="og:url" content="https://sung-woo.kim/b/syz-xnu/build-xnu.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Build the XNU kernel">
+  <meta property="og:description" content="Running Syzkaller against XNU kernel">
+  <meta property="og:site_name" content="Running Syzkaller against XNU kernel">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image" content="https://sung-woo.kim/og.jpg">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="Running Syzkaller against XNU kernel">
+  <meta property="twitter:domain" content="sung-woo.kim">
+  <meta property="twitter:url" content="https://sung-woo.kim/b/syz-xnu/build-xnu.html">
+  <meta name="twitter:title" content="Build the XNU kernel">
+  <meta name="twitter:description" content="Running Syzkaller against XNU kernel">
+  <meta name="twitter:image" content="https://sung-woo.kim/og.jpg">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Build the XNU kernel</title>
+  <link rel="stylesheet" href="../normalize.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../markdown.css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+</head>
+<body>
+    <main>
+        <article class="markdown-content">
+<h1 id="sec-1">Build the XNU kernel</h1>
+<p><a href="./index.html">Return to the index</a></p>
+<p>Apple provides a pre-built XNU kernel with sanitizers in Kernel Debug Kits<sup id="fnref:devapple"><a href="#fn:devapple" class="footnote-ref">1</a></sup>. However, these builds enable sanitizers only and do not provide KCOV instrumentation. Fuzzing without KCOV is *technically* possible, but performance is severely limited. To address this, XNU must be rebuilt with KCOV enabled.</p>
+<p>⚠️ In order to build a kernel, three versions should match: macOS version == xnu source code version == KDK version. Apple may not release the corresponding XNU source or KDK for the latest macOS release. In that case, the build will fail. At the time of writing, the latest macOS version is 26.3, but the matching XNU source and KDK are not yet available. Therefore, building XNU for the latest macOS is currently not feasible.</p>
+<p>In this demo, the target environment is macOS 15.3 (24D60), Darwin kernel 24.3.0, and xnu-11215.81.4~3.</p>
+<h2>Run OSX-KVM</h2>
+<p>First, follow <a href="https://github.com/kholia/OSX-KVM">https://github.com/kholia/OSX-KVM</a> to provision a macOS VM. After installation completes (this can take a few hours), shut down the VM and update boot arguments.</p>
+<ul>
+  <li>Mount the qcow2 backend.</li>
+</ul>
+<pre><code class="language-zsh">sudo modprobe nbd max_part=<span class="tok-number">8</span></code></pre>
+<ul>
+  <li>Mount the qcow2 image.</li>
+</ul>
+<pre><code class="language-zsh">sudo qemu-nbd -c /dev/nbd0 OpenCore/OpenCore.qcow2
+udisksctl mount -b /dev/nbd0p1</code></pre>
+<ul>
+  <li>Modify config.plist.</li>
+<p>Open <code>/media/&lt;username&gt;/EFI/EFI/OC/config.plist</code>. Set <code>boot-args</code> to <code>keepsyms=1 slide=255 serial=0x05 debug=0x0a -v</code>. Set <code>csr-active-config</code> to <code>7w8AAA==</code>.</p>
+</ul>
+<pre><code class="language-zsh">udisksctl unmount -b /dev/nbd0p1
+sudo qemu-nbd --disconnect /dev/nbd0</code></pre>
+<ul>
+  <li>Disable authenticated root in Recovery Mode.</li>
+</ul>
+<pre><code class="language-zsh">csrutil authenticated-root disable</code></pre>
+<h2>Build an XNU kernel</h2>
+<p>Inside the VM:</p>
+<ul>
+  <li>Enable SSH (via GUI), then install Xcode and KDK<sup id="fnref:devapple"><a href="#fn:devapple" class="footnote-ref">1</a></sup> (KDK_15.3_24D60.kdk).</li>
+  <li>Clone <a href="https://github.com/blacktop/darwin-xnu-build">https://github.com/blacktop/darwin-xnu-build</a></li>
+  <li>Modify <code>build.sh</code>. Append <code>KSANCOV=1</code> to all <code>make</code> commands.</li>
+  <li>Build the kernel</li>
+</ul>
+<pre><code class="language-zsh">MACOS_VERSION=<span class="tok-string">&#x27;15.3&#x27;</span> KERNEL_CONFIG=KASAN ARCH_CONFIG=X86_64 MACHINE_CONFIG=NONE ./build.sh --kc</code></pre>
+<p>The first build fails due to missing clang 16 compatibility. Add <code>UNUSED_ABI(__asan_version_mismatch_check_apple_clang_1600, void);</code> to <code>xnu/san/memory/kasan-helper.c</code>. Then rebuild with the same command.</p>
+<p>The output artifact is <code>build/xnu.obj/KASAN_X86_64/kernel.kasan</code>. Verify that KCOV instrumentation is present:</p>
+<pre><code class="language-zsh">objdump -d build/xnu.obj/KASAN_X86_64/kernel.kasan |grep ___sanitizer_cov_trace_pc_guard |head
+ffffff8000202849: e8 <span class="tok-number">32</span> aa df <span class="tok-number">01</span>        callq   0xffffff8001ffd280 &lt;___sanitizer_cov_trace_pc_guard&gt;
+ffffff8000202a15: e8 <span class="tok-number">66</span> a8 df <span class="tok-number">01</span>        callq   0xffffff8001ffd280 &lt;___sanitizer_cov_trace_pc_guard&gt;
+[snip]</code></pre>
+<p>If <code>___sanitizer_cov_trace_pc_guard()</code> is not present, KCOV instrumentation failed. Confirm that <code>KSANCOV=1</code> is correctly applied.</p>
+<h2>Install the XNU kernel</h2>
+<p>I referred to this blogpost: <a href="https://kernelshaman.blogspot.com/2021/02/building-xnu-for-macos-112-intel-apple.html">https://kernelshaman.blogspot.com/2021/02/building-xnu-for-macos-112-intel-apple.html</a></p>
+<p>Mount the boot disk.</p>
+<pre><code class="language-zsh"><span class="tok-builtin">cd</span> ~
+mkdir mnt
+sudo mount -o nobrowse -t apfs /dev/disk3s4 ./mnt</code></pre>
+<p>Copy the KDK</p>
+<pre><code class="language-zsh">sudo ditto /Library/Developer/KDKs/KDK_15.3_24D60.kdk/System ./mnt/System</code></pre>
+<p>If this step fails, verify that <code>csr-active-config</code> is set to <code>7w8AAA==</code>.</p>
+<p>Install the kernel.</p>
+<pre><code class="language-zsh">sudo cp darwin-xnu-build/build/xnu.obj/KASAN_X86_64/kernel.kasan ./mnt/System/Library/Kernels/kernel.kasan
+sudo cp -a darwin-xnu-build/build/xnu.obj/KASAN_X86_64/kernel.kasan.dSYM ./mnt/System/Library/Kernels/
+sudo kmutil install --volume-root ./mnt --update-all
+sudo bless --folder mnt/System/Library/CoreServices --bootefi --create-snapshot</code></pre>
+<p>Shut down the machine and update <code>boot-args</code> to: <code>keepsyms=1 slide=254 serial=0x05 debug=0x0a -v kcsuffix=kasan</code>.</p>
+<p>Reboot and verify the kernel version.</p>
+<pre><code class="language-zsh">a@as-iMac ~ % sysctl kern.version
+kern.version: Darwin Kernel Version <span class="tok-number">24</span>.<span class="tok-number">3</span>.<span class="tok-number">0</span>: Sun Mar <span class="tok-number">22</span> <span class="tok-number">00</span>:<span class="tok-number">20</span>:<span class="tok-number">30</span> EDT <span class="tok-number">2026</span>; a:xnu.obj/KASAN_X86_64</code></pre>
+<h2>Confirm if KCOV is working</h2>
+<p>Apple provides a KCOV demo tool.</p>
+<pre><code class="language-zsh"><span class="tok-builtin">cd</span> darwin-xnu-build/xnu/san/tools
+clang ksancov.c
+./a.out --trace
+opened ksancov on fd <span class="tok-number">3</span>
+nedges (edgemap) = <span class="tok-number">295387</span>
+mapped to 0x10dcce000 + <span class="tok-number">524304</span>
+maxpcs = <span class="tok-number">65536</span>
+ppid = <span class="tok-number">469</span>
+head = <span class="tok-number">150</span>
+0xffffff80004e9b08
+0xffffff80005dc4a4
+0xffffff8000969c49
+0xffffff80009fad0f
+0xffffff80009fad2f
+0xffffff8000969c8b
+[snip]</code></pre>
+<p>The kernel is now ready for fuzzing.</p>
+<p><a href="./index.html">Return to the index</a></p>
+<section class="footnotes">
+<hr />
+<ol>
+  <li id="fn:devapple"><a href="https://developer.apple.com/download/more/">https://developer.apple.com/download/more/</a> <a href="#fnref:devapple" class="footnote-backref" aria-label="Back to content">back</a></li>
+</ol>
+</section>
+        </article>
+    </main>
+</body>
+</html>

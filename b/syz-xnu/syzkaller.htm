@@ -1,0 +1,3309 @@
+<!DOCTYPE html>
+<html class=" nawfklic idc0_350"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>syzkaller</title>
+	<style type="text/css" media="screen">#topbar {
+	padding: 5px 10px;
+	background: #E0EBF5;
+}
+
+#topbar a {
+	color: #375EAB;
+	text-decoration: none;
+}
+
+h1, h2, h3, h4 {
+	margin: 0;
+	padding: 0;
+	color: #375EAB;
+	font-weight: bold;
+}
+
+.navigation_tab {
+	border: 1px solid black;
+	padding: 4px;
+	margin: 4px;
+	display: inline-block;
+}
+
+.navigation_tab a:hover {background-color: #ddd;}
+
+.navigation_tab_selected {
+	font-weight: bold;
+	border: 3px solid black;
+	padding: 4px;
+	margin: 4px;
+	display: inline-block;
+}
+
+.navigation {
+	padding-top: 15px;
+	padding-bottom: 6px;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+table {
+	border: 1px solid #ccc;
+	margin: 20px 5px;
+	border-collapse: collapse;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+table caption {
+	font-weight: bold;
+}
+
+table td, table th {
+	vertical-align: top;
+	padding: 2px 8px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.namespace {
+	font-weight: bold;
+	font-size: large;
+	color: #375EAB;
+}
+
+.position_table {
+	border: 0px;
+	margin: 0px;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.position_table td, .position_table tr {
+	vertical-align: center;
+	padding: 0px;
+}
+
+.position_table .namespace_td {
+	width: 100%;
+	padding-top: 10px;
+	padding-left: 20px;
+}
+
+.action_button, .action_button_selected {
+	border: 1px solid black;
+	align: left;
+	vertical-align: center;
+	text-align: center;
+	width: 30px;
+	height: 30px;
+	padding: 4px;
+	margin: 5px;
+}
+
+.action_button_selected {
+	border: 3px solid black;
+}
+
+.position_table .search {
+	text-align: right;
+}
+
+.list_table td, .list_table th {
+	border-left: 1px solid #ccc;
+}
+
+.list_table th {
+	background: #F4F4F4;
+}
+
+.list_table tr:nth-child(2n) {
+	background: #F4F4F4;
+}
+
+.list_table tr:hover {
+	background: #ffff99;
+}
+
+.list_table .namespace {
+	width: 100pt;
+	max-width: 100pt;
+}
+
+.list_table .title {
+	width: 350pt;
+	max-width: 350pt;
+}
+
+.list_table .commit_list {
+	width: 500pt;
+	max-width: 500pt;
+}
+
+.list_table .tag {
+	font-family: monospace;
+	font-size: 8pt;
+	max-width: 60pt;
+}
+
+.list_table .opts {
+	width: 40pt;
+	max-width: 40pt;
+}
+
+.list_table .status {
+	width: 250pt;
+	max-width: 250pt;
+}
+
+.list_table .patched {
+	width: 60pt;
+	max-width: 60pt;
+	text-align: center;
+}
+
+.list_table .kernel {
+	width: 80pt;
+	max-width: 80pt;
+}
+
+.list_table .maintainers {
+	max-width: 300pt;
+	white-space: normal;
+}
+
+.list_table .result {
+	width: 60pt;
+	max-width: 200pt;
+}
+
+.list_table .stat {
+	width: 55pt;
+	font-family: monospace;
+	text-align: right;
+}
+
+.list_table .discussions {
+	font-family: monospace;
+	text-align: left;
+}
+
+.list_table .bisect_status {
+	width: 75pt;
+	max-width: 75pt;
+	font-family: monospace;
+	text-align: right;
+}
+
+.list_table .date {
+	width: 60pt;
+	max-width: 60pt;
+	font-family: monospace;
+	text-align: right;
+}
+
+.list_table .stat_name {
+	width: 180pt;
+	max-width: 180pt;
+	font-family: monospace;
+}
+
+.list_table .stat_value {
+	width: 200pt;
+	max-width: 200pt;
+	font-family: monospace;
+}
+
+.list_table .stale_repro {
+	text-decoration: line-through;
+}
+
+.list_table .assets {
+	white-space: nowrap;
+}
+
+.list_table .assets .no-break {
+	display: inline-block;
+}
+
+.list_table .job_description {
+	max-width: 600pt;
+	word-break: break-all;
+	overflow-wrap: break-word;
+	white-space: normal;
+}
+
+.list_table .icon {
+	font-size: 75%;
+}
+
+.list_table .status-crashed {
+	background-color: #FF8674;
+}
+
+.list_table tr:hover .status-crashed {
+	background-color: #ffa397;
+}
+
+.list_table .status-ok {
+	background-color: lightgreen;
+}
+
+.list_table tr:hover .status-ok {
+	background-color: palegreen;
+}
+
+.list_table .status-error {
+	background-color: lightgray;
+}
+
+.list_table tr:hover .status-error {
+	background-color: gainsboro;
+}
+
+.bug-label {
+	background: white;
+	border: 1pt solid black;
+	display: inline-block;
+	padding-left: 2pt;
+	padding-right: 2pt;
+	margin-left: 4pt;
+	font-size: small;
+}
+
+.bug-label a {
+	text-decoration: none;
+	color: black;
+}
+
+.bad {
+	color: #f00;
+	font-weight: bold;
+}
+
+.inactive {
+	color: #888;
+}
+
+.plain {
+	text-decoration: none;
+}
+
+textarea {
+	width:100%;
+	font-family: monospace;
+}
+
+.mono {
+	font-family: monospace;
+}
+
+.info_link {
+	color: #25a7db;
+	text-decoration: none;
+}
+
+.page {
+	position: relative;
+	width: 100%;
+}
+
+aside {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 290px;
+	margin-top: 5px;
+}
+
+.panel {
+	border: 1px solid #aaa;
+	border-radius: 5px;
+	margin-bottom: 5px;
+	margin-top: 5px;
+}
+
+.panel h1 {
+	font-size: 16px;
+	margin: 0;
+	padding: 2px 8px;
+}
+
+.panel select {
+	padding: 5px;
+	border: 0;
+	width: 100%;
+}
+
+.panel label {
+	margin-left: 7px;
+}
+
+.main-content {
+	position: absolute;
+	top: 0;
+	left: 300px;
+	right: 5px;
+	min-height: 200px;
+	overflow: hidden;
+}
+
+.graph_help {
+	position: absolute;
+	top: 115px;
+	left: 10px;
+	z-index: 1;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: xx-large;
+	color: blue;
+}
+
+#graph_div {
+	height: 85vh;
+}
+
+#crash_div {
+	align: left;
+	width: 90%;
+	height: 400px;
+	margin: 0 0;
+	overflow: scroll;
+	border: 1px solid #777;
+	padding: 0px;
+	background: transparent;
+}
+
+#crash_div pre {
+	margin: 1px;
+}
+
+.input-values {
+	margin-left: 7px;
+	margin-bottom: 7px;
+}
+
+.input-values textarea {
+	width: 750pt;
+	height: 250pt;
+}
+
+.input-group {
+	margin-top: 7px;
+	margin-bottom: 7px;
+	display: block;
+}
+
+.input-group button {
+	width: 20pt;
+}
+
+.fix-candidate-block {
+	background: lightgreen;
+	padding: 5pt;
+}
+
+.bug-bisection-info {
+	float:left;
+	margin-right: 15px;
+	margin-bottom: 5px;
+	padding: 5px;
+}
+
+.bug-bisection-stop {
+	clear: both;
+	margin-bottom: 10px;
+}
+
+.collapsible {
+	border: 1px solid lightgrey;
+	margin-bottom: 15px;
+}
+
+.collapsible .content {
+	overflow-x: auto;
+}
+
+.collapsible .head {
+	max-width: 100%;
+	background-color: lightgrey;
+	padding: 5pt;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+.collapsible-hide .content {
+	display: none;
+}
+
+.collapsible-hide .hide-icon {
+	display: none;
+}
+
+.collapsible-show .show-icon {
+	display: none;
+}
+
+.emergency-stop {
+	background-color: yellow;
+	padding: 5pt;
+	margin-bottom: 5pt;
+}
+
+.emergency-stopped {
+	background-color: coral;
+	padding: 5pt;
+	margin-bottom: 5pt;
+}
+
+ 
+.dropbtn {
+	background-color: transparent;
+	color: #375EAB;
+	text-decoration: none;
+	border: none;
+	font-family: inherit;
+	font-size: inherit;
+}
+
+ 
+.dropdown {
+	position: relative;
+	display: inline-block;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+ 
+.dropdown-content {
+	display: none;
+	flex-direction: column;
+	position: absolute;
+	background-color: #f1f1f1;
+	z-index: 1;
+}
+
+ 
+.dropdown-content div a {
+	color: black;
+	text-decoration: none;
+	display: block;
+}
+
+ 
+.dropdown-content a:hover {background-color: #ddd;}
+
+ 
+.dropdown:hover .dropdown-content {display: flex;}
+
+ 
+.dropdown:hover .dropbtn {background-color: #ddd;}
+</style><script>
+
+
+function sortTable(item, colName, conv, desc = false) {
+	table = item.parentNode.parentNode.parentNode.parentNode;
+	rows = table.rows;
+	col = findColumnByName(rows[0].getElementsByTagName("th"), colName);
+	values = [];
+	for (i = 1; i < rows.length; i++) {
+		const td = rows[i].getElementsByTagName("td")[col]
+		let value = td.textContent
+		if (td.getAttribute("sort-value") != null)
+			value = td.getAttribute("sort-value")
+		values.push([conv(value), rows[i]]);
+	}
+	if (desc)
+		desc = !isSorted(values.slice().reverse())
+	else
+		desc = isSorted(values);
+	values.sort(function(a, b) {
+		if (a[0] == b[0]) return 0;
+		if (desc && a[0] > b[0] || !desc && a[0] < b[0]) return -1;
+		return 1;
+	});
+	for (i = 0; i < values.length; i++)
+		table.tBodies[0].appendChild(values[i][1]);
+	return false;
+}
+
+function findColumnByName(headers, colName) {
+	for (i = 0; i < headers.length; i++) {
+		if (headers[i].innerText == colName)
+			return i;
+	}
+	return 0;
+}
+
+function isSorted(values) {
+	for (i = 0; i < values.length - 1; i++) {
+		if (values[i][0] > values[i + 1][0])
+			return false;
+	}
+	return true;
+}
+
+function textSort(v) { return v == "" ? "zzz" : v.toLowerCase(); }
+function numSort(v) { return -parseInt(v); }
+function floatSort(v) { return -parseFloat(v); }
+function reproSort(v) { return v == "C" ? 0 : v == "syz" ? 1 : 2; }
+function patchedSort(v) { return v == "" ? -1 : parseInt(v); }
+function lineSort(v) { return -v.split(/\r\n|\r|\n/g).length }
+
+function timeSort(v) {
+	if (v == "now")
+		return 0;
+	m = v.indexOf('m');
+	h = v.indexOf('h');
+	d = v.indexOf('d');
+	if (m > 0 && h < 0)
+		return parseInt(v);
+	if (h > 0 && m > 0)
+		return parseInt(v) * 60 + parseInt(v.substring(h + 1));
+	if (d > 0 && h > 0)
+		return parseInt(v) * 60 * 24 + parseInt(v.substring(d + 1)) * 60;
+	if (d > 0)
+		return parseInt(v) * 60 * 24;
+	return 1000000000;
+}
+
+
+
+function findAncestorByClass (el, cls) {
+	while ((el = el.parentElement) && !el.classList.contains(cls));
+	return el;
+}
+
+function deleteInputGroup(node) {
+	group = findAncestorByClass(node, "input-group")
+	values = findAncestorByClass(group, "input-values")
+	if (!values) {
+		return false
+	}
+	count = values.querySelectorAll('.input-group').length
+	if (count == 1) {
+		
+		input = group.querySelector('input')
+		input.value = ""
+	} else {
+		group.remove()
+	}
+	return false
+}
+
+function addInputGroup(node) {
+	values = findAncestorByClass(node, "input-values")
+	groups = values.querySelectorAll(".input-group")
+	if (groups.length == 0) {
+		
+		return false
+	}
+	lastGroup = groups[groups.length - 1]
+	newGroup = lastGroup.cloneNode(true)
+	newGroup.querySelector('input').value = ""
+	values.insertBefore(newGroup, lastGroup.nextSibling)
+	return false
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+	document.addEventListener('click', function(event) {
+		const collapsible = event.target.closest('.collapsible')
+		if (!collapsible) {
+			return
+		}
+		const toggle = event.target.closest('.collapsible .head');
+		if (toggle) {
+			collapsible.classList.toggle("collapsible-hide");
+			collapsible.classList.toggle("collapsible-show");
+		}
+	})
+})
+</script>
+</head>
+<body data-new-gr-c-s-check-loaded="8.936.0" data-gr-ext-installed="">
+	<header id="topbar">
+		<table class="position_table">
+			<tbody><tr>
+				<td>
+					<h1><a href="http://127.0.0.1:56741/">syzkaller</a></h1>
+				</td>
+				<td>
+					<form action="/action" method="post">
+						<input type="hidden" name="url" value="/">
+						<button type="submit" name="toggle" value="expert" class="action_button" title="Toggle expert mode">
+							🧠
+						</button>
+						<button type="submit" name="toggle" value="pause" class="action_button" title="Pause/unpause fuzzing">
+							⏸️
+						</button>
+					</form>
+				</td>
+				<td class="search">
+					<a href="https://github.com/google/syzkaller/blob/master/docs/" target="_blank">docs</a> |
+					<a href="https://groups.google.com/forum/#!forum/syzkaller" target="_blank">mailing list</a> |
+					<a href="https://github.com/google/syzkaller/commits/394135ac42f644301ae62bcb664ef26a7ca2203b" target="_blank">source 394135ac</a>
+				</td>
+			</tr>
+		</tbody></table>
+		<div class="navigation">
+			<div class="navigation_tab">
+				<a href="http://127.0.0.1:56741/stats">📈 stats</a>
+			</div>
+			<div class="navigation_tab">
+				<a href="http://127.0.0.1:56741/cover">📃 coverage</a>
+			</div>
+			<div class="navigation_tab">
+				<a href="http://127.0.0.1:56741/syscalls">🤖 syscalls</a>
+			</div>
+			<div class="navigation_tab">
+				<a href="http://127.0.0.1:56741/corpus">🛒 corpus</a>
+			</div>
+			<div class="navigation_tab">
+				<a href="http://127.0.0.1:56741/vms">💻 VMs</a>
+			</div>
+			<div class="navigation_tab">
+				<a href="http://127.0.0.1:56741/config">🔧 config</a>
+			</div>
+		</div>
+	</header>
+	<br>
+	
+
+<table class="list_table">
+	
+	<tbody><tr>
+		<td class="stat_name" title="Total test call executions">call total</td>
+		<td class="stat_value">
+			
+				247759 (11/sec)
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Number of candidate programs in triage queue">candidates</td>
+		<td class="stat_value">
+			
+				0
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Number of test programs in the corpus">corpus</td>
+		<td class="stat_value">
+			
+				<a href="http://127.0.0.1:56741/corpus">6656</a>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Source coverage in the corpus">coverage</td>
+		<td class="stat_value">
+			
+				<a href="http://127.0.0.1:56741/cover">31631</a>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Total test program executions">exec total</td>
+		<td class="stat_value">
+			
+				39766 (113/min)
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Number of pending repro tasks">pending</td>
+		<td class="stat_value">
+			
+				0
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Number of crashes being reproduced">reproducing</td>
+		<td class="stat_value">
+			
+				0
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Number of unique crashes types">crash types</td>
+		<td class="stat_value">
+			
+				6
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Total number of VM crashes">crashes</td>
+		<td class="stat_value">
+			
+				182
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Total number of suppressed VM crashes">suppressed</td>
+		<td class="stat_value">
+			
+				0
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Number of enabled syscalls">syscalls</td>
+		<td class="stat_value">
+			
+				<a href="http://127.0.0.1:56741/syscalls">624</a>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="stat_name" title="Total uptime (seconds)">uptime</td>
+		<td class="stat_value">
+			
+				20872 sec
+			
+		</td>
+	</tr>
+	
+</tbody></table>
+
+
+<table class="list_table">
+	<caption>Crashes:</caption>
+	<tbody><tr>
+		<th><a onclick="return sortTable(this, 'Description', textSort)" href="#">Description</a></th>
+		<th><a onclick="return sortTable(this, 'Count', numSort)" href="#">Count</a></th>
+		<th><a onclick="return sortTable(this, 'First Time', textSort, true)" href="#">First Time</a></th>
+		<th><a onclick="return sortTable(this, 'Last Time', textSort, true)" href="#">Last Time</a></th>
+		<th><a onclick="return sortTable(this, 'Report', textSort)" href="#">Report</a></th>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=9683822d9f1c3fd3919482ce21a00b906953c27b">can't ssh into the instance</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=a44edb6165fb57330822534765f0e4b986f46f5d">debugger: Unexpected kernel trap number: 0x6</a></td>
+		<td class="stat inactive">41</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=0f3da55444444fe86f534ef3c32be15e1bd88013">debugger: Unexpected kernel trap number: 0xe</a></td>
+		<td class="stat ">100</td>
+		<td class="time ">2026/03/22 18:34</td>
+		<td class="time ">2026/03/22 18:34</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=af9a38cfd33b15c999bf985a6fdced0764c88774">failed to read from qemu: EOF</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 11:17</td>
+		<td class="time inactive">2026/03/22 11:17</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=439c37d288d4f26a33a6c7e5c57a97791453a447">lost connection to test machine</a></td>
+		<td class="stat ">100</td>
+		<td class="time ">2026/03/22 20:10</td>
+		<td class="time ">2026/03/22 20:10</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=e9f5b11984c54cecb386b92bb20c76d5d003719f">no output from test machine</a></td>
+		<td class="stat ">100</td>
+		<td class="time ">2026/03/22 20:43</td>
+		<td class="time ">2026/03/22 20:43</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=18a9f476f263f019b00395d807385fb15f658f9c">panic: assertion failed: !(inp-&gt;inp_flags2 &amp; ADDR)</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=6b7098925d7cd2dcda00e5b1b2510a72165813d3">panic: assertion failed: RB_EMPTY(&amp;imf-&gt;imf_sources)</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=fab692c0b58df325b593e4ac6a2eeec6575ce610">panic: chgproccnt: lost user @kern_proc.c:LINE</a></td>
+		<td class="stat inactive">4</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=f5e30bc8373e66ebf61a2bfa76d992b21387048b">panic: initproc exited -- exit reason namespace NUM subcode 0x4 description: none</a></td>
+		<td class="stat inactive">11</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=3bb138e339f85769115017b9c0fa5852533272fd">panic: initproc exited -- exit reason namespace NUM subcode 0x5 description: none</a></td>
+		<td class="stat ">100</td>
+		<td class="time ">2026/03/22 18:17</td>
+		<td class="time ">2026/03/22 18:17</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=61ef820bf46153d3825532a73fff3a3925bb4f82">panic: initproc exited -- exit reason namespace NUM subcode 0x6 description: none</a></td>
+		<td class="stat inactive">24</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=c101c191390c778e213da5a771fcfc9acc5cb8fd">panic: initproc exited -- exit reason namespace NUM subcode 0x7 description: none</a></td>
+		<td class="stat inactive">20</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=12c978dc7a98ad89cc5792949a7fecb108ad73c8">panic: initproc exited -- exit reason namespace NUM subcode 0x8 description: none</a></td>
+		<td class="stat inactive">25</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=dfe6fb4dbccc890068adba377f950f776ecc7b40">panic: initproc exited -- exit reason namespace NUM subcode 0xa description: none</a></td>
+		<td class="stat inactive">21</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=369cc4aa33ad6a706b5e3015b29bea4ab73b2aaa">panic: initproc exited -- exit reason namespace NUM subcode 0xb description: none</a></td>
+		<td class="stat inactive">3</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=8f79bde6be4ff0f3a7f786a9ab60233d47652960">panic: initproc exited -- exit reason namespace NUM subcode 0xc description: none</a></td>
+		<td class="stat inactive">3</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=80903180f12842879d960e8efe2e864376bfca14">panic: Kernel trap type = NUM=page fault</a></td>
+		<td class="stat inactive">2</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=b9cad62bebda3ac9995dc9b15de29aacc624e075">panic: mutex (ADDR) not owned @locks_i386.c:LINE</a></td>
+		<td class="stat inactive">3</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=ccc9cbd83058fb6abcfb295a78e9c902fa6c248a">panic: pf_send_tcp: not AF_INET or AF_INET6! @pf.c:LINE</a></td>
+		<td class="stat inactive">4</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=263d6c314324b951fd374eab7f9945484eba7bee">panic: userspace panic:</a></td>
+		<td class="stat ">100</td>
+		<td class="time ">2026/03/22 20:43</td>
+		<td class="time ">2026/03/22 20:43</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=162de7500a6922399f57b815a06af57a8cbc5937">panic: userspace panic: !)8_k B[MnNE:rmZJw$ZQKN!</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=2b9d672a2b2f747b0ec2008f5041a09508484d70">panic: userspace panic: ./file0</a></td>
+		<td class="stat inactive">54</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=109263e593ba39a44b8c387149387cacadc69e33">panic: userspace panic: ./file0/file0</a></td>
+		<td class="stat inactive">2</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=ddfb6c57afee433c9c3c0031945d2a5969cfd84f">panic: userspace panic: ./file2</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=694e72dfb2bf7fe951f243b6b9933a4079d760d3">panic: userspace panic: /../file0</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=6f90df8b21bb002d18db31ca70805ff6c6d93c71">panic: userspace panic: /dev/pf</a></td>
+		<td class="stat inactive">13</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=0bbe8528b93824c8c1363705f3b1b0933802c19a">panic: userspace panic: /file0</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=4442b723b34cb7819ec3e87fa694d8632737fe1f">panic: userspace panic: @</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=1a792a1acca3a7ce9f623fdd84f839be9cdd8f72">panic: userspace panic: aaaa</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=a545fe4aa3099d0b3a15bafab88475a00dee6424">panic: userspace panic: ADDR</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=55a333c9d97411745e512a13b2705cabc04e7ab7">panic: userspace panic: b)T^XNUMC:C</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=bc829c3cee7aa229fb654c12c927291d3a78541d">panic: userspace panic: BJNUM#NUM(&lt;NUM%l1T6%NUMS)//*</a></td>
+		<td class="stat inactive">2</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=3b7987451b927f92d6734f1994a66bf31a6c857a">panic: userspace panic: Di JFNUM?v:aw</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=6953ef4ccf35fc15d3366df4a37bedf214f4e660">panic: userspace panic: N</a></td>
+		<td class="stat inactive">3</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=427a42d592b47474bf7724604234ea458eb2fec5">panic: userspace panic: N!</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=c14cc4b20b1574dc504f758c8197464b5bb66688">panic: userspace panic: N!Y</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=4fde906c9b670d2b5090e8a61d794b837853b03f">panic: userspace panic: N"</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=856538cd1168fe1a57c8f905382d3e42a320e350">panic: userspace panic: N$</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=9c873ab5aaa6fbb5646d15ed2d919840290d2c40">panic: userspace panic: N&amp;</a></td>
+		<td class="stat inactive">4</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=478209b486194cf681d41c02d088b3e5411538c9">panic: userspace panic: N'</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=db9aef2086c5984bbe5a4b290135017d1f67834d">panic: userspace panic: N'[@</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=cb2a76b07c20382d49aa6a154a16b4c1fff6441d">panic: userspace panic: physmem</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=9069f96a3a45c58f60ffac14f66a6db2a4798887">panic: userspace panic: user space RB_PANIC message copyin failed</a></td>
+		<td class="stat inactive">53</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=c0a76cbcd4c92632a7c21bbc632f7b28807967f5">panic: userspace panic: Uvu)%a&amp;-s};</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=05495a04e45d0fb2b7899ade7ccb9d6b4802636a">panic: userspace panic: }#-RcNUMW(</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=c21a2f7e19fe32726a021d17a8004d8e045dbbcf">panic: VMSEL: INSERT FAILED: ADDR, ADDR, ADDR, ADDR @vm_map_store_rb.c:LINE</a></td>
+		<td class="stat inactive">100</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=be72e1d33ffd6c0fe3b576808cb0e8f3d735ca06">SYZFAIL: access (F_OK) failed</a></td>
+		<td class="stat inactive">100</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=bcc6916a3e923ab0dbce4529ca71cf98a4cbb6d7">SYZFAIL: bad allocate request</a></td>
+		<td class="stat inactive">5</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=197d077bbc983b7abc1315baa1e8b18074adc48a">SYZFAIL: bad argument type</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=73c144c92eaf72b0dd14e9aacad9212d92283483">SYZFAIL: bad result argument format</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=fa6f1254fa2eff7284476d77ddc114eca89ef347">SYZFAIL: child stopped</a></td>
+		<td class="stat ">100</td>
+		<td class="time ">2026/03/22 20:07</td>
+		<td class="time ">2026/03/22 20:07</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=92344a72c9772ea5ff6ea7a898dfea64862de143">SYZFAIL: coverage filter is full</a></td>
+		<td class="stat inactive">100</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=c09a7b33c156e5971970d6eef814d568b514aed4">SYZFAIL: failed to send rpc</a></td>
+		<td class="stat inactive">1</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=0b54777e02de3e27f957cb294fc8c592fa8d731c">SYZFAIL: invalid syscall number</a></td>
+		<td class="stat inactive">3</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=e4cc99caedeac159a51e685ad58bb00289968f11">SYZFAIL: posix_spawnp failed</a></td>
+		<td class="stat inactive">100</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:39</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=13716a7a2d5c9f640000f1eb222a456ba2e7726c">SYZFAIL: ShmemBuilder: too large output offset</a></td>
+		<td class="stat inactive">6</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="title"><a href="http://127.0.0.1:56741/crash?id=e544f4df4d5f1e35d62b874dc4bcff1a5bc01336">SYZFAIL: SIGBUS</a></td>
+		<td class="stat inactive">4</td>
+		<td class="time inactive">2026/03/22 10:37</td>
+		<td class="time inactive">2026/03/22 01:40</td>
+		<td>
+			
+			
+		</td>
+	</tr>
+	
+</tbody></table>
+
+
+
+
+
+
+
+
+
+
+<b>Log:</b>
+<br>
+<textarea id="log_textarea" readonly="readonly" rows="20" wrap="off">2026/03/22
+ 18:22:39 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (178/min) pending=0 reproducing=0 
+2026/03/22 18:22:49 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (178/min) pending=0 reproducing=0 
+2026/03/22 18:22:59 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (178/min) pending=0 reproducing=0 
+2026/03/22 18:23:09 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (177/min) pending=0 reproducing=0 
+2026/03/22 18:23:19 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (177/min) pending=0 reproducing=0 
+2026/03/22 18:23:29 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (177/min) pending=0 reproducing=0 
+2026/03/22 18:23:29 VM 0: crash: no output from test machine
+2026/03/22 18:23:39 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (177/min) pending=0 reproducing=0 
+2026/03/22 18:23:49 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (177/min) pending=0 reproducing=0 
+2026/03/22 18:23:59 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (177/min) pending=0 reproducing=0 
+2026/03/22 18:24:09 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (177/min) pending=0 reproducing=0 
+2026/03/22 18:24:19 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (176/min) pending=0 reproducing=0 
+2026/03/22 18:24:29 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (176/min) pending=0 reproducing=0 
+2026/03/22 18:24:39 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (176/min) pending=0 reproducing=0 
+2026/03/22 18:24:49 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (176/min) pending=0 reproducing=0 
+2026/03/22 18:24:59 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (176/min) pending=0 reproducing=0 
+2026/03/22 18:25:09 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (176/min) pending=0 reproducing=0 
+2026/03/22 18:25:19 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (176/min) pending=0 reproducing=0 
+2026/03/22 18:25:29 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (175/min) pending=0 reproducing=0 
+2026/03/22 18:25:38 VM 1: crash: no output from test machine
+2026/03/22 18:25:39 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (175/min) pending=0 reproducing=0 
+2026/03/22 18:25:49 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (175/min) pending=0 reproducing=0 
+2026/03/22 18:25:59 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (175/min) pending=0 reproducing=0 
+2026/03/22 18:26:05 VM 3: crash: no output from test machine
+2026/03/22 18:26:09 call total=208475 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37219 (175/min) pending=0 reproducing=0 
+2026/03/22 18:26:10 VM 2: crash: no output from test machine
+2026/03/22 18:26:18 runner 0 connected
+2026/03/22 18:26:19 call total=208528 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37222 (175/min) pending=0 reproducing=0 
+2026/03/22 18:26:29 call total=209681 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37273 (175/min) pending=0 reproducing=0 
+2026/03/22 18:26:39 call total=210204 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37303 (175/min) pending=0 reproducing=0 
+2026/03/22 18:26:49 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (175/min) pending=0 reproducing=0 
+2026/03/22 18:26:59 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (175/min) pending=0 reproducing=0 
+2026/03/22 18:27:09 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (175/min) pending=0 reproducing=0 
+2026/03/22 18:27:19 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (174/min) pending=0 reproducing=0 
+2026/03/22 18:27:29 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (174/min) pending=0 reproducing=0 
+2026/03/22 18:27:39 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (174/min) pending=0 reproducing=0 
+2026/03/22 18:27:49 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (174/min) pending=0 reproducing=0 
+2026/03/22 18:27:59 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (174/min) pending=0 reproducing=0 
+2026/03/22 18:28:09 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (174/min) pending=0 reproducing=0 
+2026/03/22 18:28:19 call total=210447 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37317 (174/min) pending=0 reproducing=0 
+2026/03/22 18:28:21 runner 1 connected
+2026/03/22 18:28:29 call total=210715 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37336 (174/min) pending=0 reproducing=0 
+2026/03/22 18:28:39 call total=210715 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37336 (173/min) pending=0 reproducing=0 
+2026/03/22 18:28:48 runner 3 connected
+2026/03/22 18:28:49 call total=210760 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37339 (173/min) pending=0 reproducing=0 
+2026/03/22 18:28:59 runner 2 connected
+2026/03/22 18:28:59 call total=211101 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37360 (173/min) pending=0 reproducing=0 
+2026/03/22 18:29:09 call total=212840 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37437 (173/min) pending=0 reproducing=0 
+2026/03/22 18:29:19 call total=213805 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37500 (174/min) pending=0 reproducing=0 
+2026/03/22 18:29:29 call total=214655 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37557 (174/min) pending=0 reproducing=0 
+2026/03/22 18:29:39 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (174/min) pending=0 reproducing=0 
+2026/03/22 18:29:49 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (174/min) pending=0 reproducing=0 
+2026/03/22 18:29:59 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (173/min) pending=0 reproducing=0 
+2026/03/22 18:30:09 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (173/min) pending=0 reproducing=0 
+2026/03/22 18:30:19 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (173/min) pending=0 reproducing=0 
+2026/03/22 18:30:29 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (173/min) pending=0 reproducing=0 
+2026/03/22 18:30:39 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (173/min) pending=0 reproducing=0 
+2026/03/22 18:30:49 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (173/min) pending=0 reproducing=0 
+2026/03/22 18:30:59 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (173/min) pending=0 reproducing=0 
+2026/03/22 18:31:09 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (172/min) pending=0 reproducing=0 
+2026/03/22 18:31:19 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (172/min) pending=0 reproducing=0 
+2026/03/22 18:31:29 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (172/min) pending=0 reproducing=0 
+2026/03/22 18:31:39 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (172/min) pending=0 reproducing=0 
+2026/03/22 18:31:47 VM 0: crash: no output from test machine
+2026/03/22 18:31:49 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (172/min) pending=0 reproducing=0 
+2026/03/22 18:31:59 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (172/min) pending=0 reproducing=0 
+2026/03/22 18:32:09 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (172/min) pending=0 reproducing=0 
+2026/03/22 18:32:19 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (172/min) pending=0 reproducing=0 
+2026/03/22 18:32:29 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (171/min) pending=0 reproducing=0 
+2026/03/22 18:32:39 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (171/min) pending=0 reproducing=0 
+2026/03/22 18:32:49 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (171/min) pending=0 reproducing=0 
+2026/03/22 18:32:59 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (171/min) pending=0 reproducing=0 
+2026/03/22 18:33:09 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (171/min) pending=0 reproducing=0 
+2026/03/22 18:33:19 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (171/min) pending=0 reproducing=0 
+2026/03/22 18:33:29 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (171/min) pending=0 reproducing=0 
+2026/03/22 18:33:30 VM 1: crash: no output from test machine
+2026/03/22 18:33:39 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (170/min) pending=0 reproducing=0 
+2026/03/22 18:33:49 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (170/min) pending=0 reproducing=0 
+2026/03/22 18:33:59 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (170/min) pending=0 reproducing=0 
+2026/03/22 18:34:09 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (170/min) pending=0 reproducing=0 
+2026/03/22 18:34:19 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (170/min) pending=0 reproducing=0 
+2026/03/22 18:34:28 VM 3: crash: no output from test machine
+2026/03/22 18:34:29 call total=214786 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37567 (170/min) pending=0 reproducing=0 
+2026/03/22 18:34:30 runner 0 connected
+2026/03/22 18:34:38 VM 2: crash: no output from test machine
+2026/03/22 18:34:39 call total=215489 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37601 (170/min) pending=0 reproducing=0 
+2026/03/22 18:34:48 VM 0: crash: debugger: Unexpected kernel trap 
+number: 0xe
+2026/03/22 18:34:49 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (170/min) pending=0 reproducing=0 
+2026/03/22 18:34:59 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (170/min) pending=0 reproducing=0 
+2026/03/22 18:35:09 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (170/min) pending=0 reproducing=0 
+2026/03/22 18:35:19 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (169/min) pending=0 reproducing=0 
+2026/03/22 18:35:29 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (169/min) pending=0 reproducing=0 
+2026/03/22 18:35:39 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (169/min) pending=0 reproducing=0 
+2026/03/22 18:35:49 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (169/min) pending=0 reproducing=0 
+2026/03/22 18:35:59 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (169/min) pending=0 reproducing=0 
+2026/03/22 18:36:09 call total=215755 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37617 (169/min) pending=0 reproducing=0 
+2026/03/22 18:36:18 runner 1 connected
+2026/03/22 18:36:19 call total=215802 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37620 (169/min) pending=0 reproducing=0 
+2026/03/22 18:36:29 call total=216377 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37660 (169/min) pending=0 reproducing=0 
+2026/03/22 18:36:39 call total=216808 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37690 (169/min) pending=0 reproducing=0 
+2026/03/22 18:36:49 call total=217071 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37707 (169/min) pending=0 reproducing=0 
+2026/03/22 18:36:59 call total=217071 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37707 (169/min) pending=0 reproducing=0 
+2026/03/22 18:37:09 call total=217071 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37707 (168/min) pending=0 reproducing=0 
+2026/03/22 18:37:11 runner 3 connected
+2026/03/22 18:37:19 call total=217420 (16/sec) candidates=0 corpus=6734 
+coverage=31629 exec total=37725 (168/min) pending=0 reproducing=0 
+2026/03/22 18:37:29 call total=217764 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37750 (168/min) pending=0 reproducing=0 
+2026/03/22 18:37:31 runner 2 connected
+2026/03/22 18:37:39 call total=218382 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37791 (168/min) pending=0 reproducing=0 
+2026/03/22 18:37:49 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (168/min) pending=0 reproducing=0 
+2026/03/22 18:37:59 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (168/min) pending=0 reproducing=0 
+2026/03/22 18:38:09 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (168/min) pending=0 reproducing=0 
+2026/03/22 18:38:19 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (168/min) pending=0 reproducing=0 
+2026/03/22 18:38:29 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (168/min) pending=0 reproducing=0 
+2026/03/22 18:38:39 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (168/min) pending=0 reproducing=0 
+2026/03/22 18:38:49 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (168/min) pending=0 reproducing=0 
+2026/03/22 18:38:59 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (168/min) pending=0 reproducing=0 
+2026/03/22 18:39:09 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (167/min) pending=0 reproducing=0 
+2026/03/22 18:39:19 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (167/min) pending=0 reproducing=0 
+2026/03/22 18:39:29 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (167/min) pending=0 reproducing=0 
+2026/03/22 18:39:39 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (167/min) pending=0 reproducing=0 
+2026/03/22 18:39:49 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (167/min) pending=0 reproducing=0 
+2026/03/22 18:39:50 VM 0: crash: no output from test machine
+2026/03/22 18:39:59 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (167/min) pending=0 reproducing=0 
+2026/03/22 18:40:09 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (167/min) pending=0 reproducing=0 
+2026/03/22 18:40:19 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (167/min) pending=0 reproducing=0 
+2026/03/22 18:40:29 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (166/min) pending=0 reproducing=0 
+2026/03/22 18:40:39 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (166/min) pending=0 reproducing=0 
+2026/03/22 18:40:49 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (166/min) pending=0 reproducing=0 
+2026/03/22 18:40:59 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (166/min) pending=0 reproducing=0 
+2026/03/22 18:41:09 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (166/min) pending=0 reproducing=0 
+2026/03/22 18:41:19 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (166/min) pending=0 reproducing=0 
+2026/03/22 18:41:29 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (166/min) pending=0 reproducing=0 
+2026/03/22 18:41:39 call total=218710 (16/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (166/min) pending=0 reproducing=0 
+2026/03/22 18:41:48 VM 1: crash: no output from test machine
+2026/03/22 18:41:49 call total=218710 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (165/min) pending=0 reproducing=0 
+2026/03/22 18:41:59 call total=218710 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (165/min) pending=0 reproducing=0 
+2026/03/22 18:42:09 call total=218710 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (165/min) pending=0 reproducing=0 
+2026/03/22 18:42:19 call total=218710 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (165/min) pending=0 reproducing=0 
+2026/03/22 18:42:29 call total=218710 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37813 (165/min) pending=0 reproducing=0 
+2026/03/22 18:42:38 runner 0 connected
+2026/03/22 18:42:39 call total=218754 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37816 (165/min) pending=0 reproducing=0 
+2026/03/22 18:42:49 call total=219067 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37837 (165/min) pending=0 reproducing=0 
+2026/03/22 18:42:50 VM 3: crash: no output from test machine
+2026/03/22 18:42:50 VM 2: crash: no output from test machine
+2026/03/22 18:42:59 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (165/min) pending=0 reproducing=0 
+2026/03/22 18:43:09 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (165/min) pending=0 reproducing=0 
+2026/03/22 18:43:19 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (164/min) pending=0 reproducing=0 
+2026/03/22 18:43:29 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (164/min) pending=0 reproducing=0 
+2026/03/22 18:43:39 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (164/min) pending=0 reproducing=0 
+2026/03/22 18:43:49 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (164/min) pending=0 reproducing=0 
+2026/03/22 18:43:59 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (164/min) pending=0 reproducing=0 
+2026/03/22 18:44:09 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (164/min) pending=0 reproducing=0 
+2026/03/22 18:44:19 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (164/min) pending=0 reproducing=0 
+2026/03/22 18:44:29 call total=219158 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37843 (164/min) pending=0 reproducing=0 
+2026/03/22 18:44:31 runner 1 connected
+2026/03/22 18:44:39 call total=219382 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37859 (164/min) pending=0 reproducing=0 
+2026/03/22 18:44:49 call total=219427 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37862 (163/min) pending=0 reproducing=0 
+2026/03/22 18:44:59 call total=219427 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37862 (163/min) pending=0 reproducing=0 
+2026/03/22 18:45:09 call total=219427 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37862 (163/min) pending=0 reproducing=0 
+2026/03/22 18:45:19 call total=219427 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37862 (163/min) pending=0 reproducing=0 
+2026/03/22 18:45:29 call total=219427 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37862 (163/min) pending=0 reproducing=0 
+2026/03/22 18:45:33 runner 3 connected
+2026/03/22 18:45:34 runner 2 connected
+2026/03/22 18:45:39 call total=219770 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37885 (163/min) pending=0 reproducing=0 
+2026/03/22 18:45:49 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (163/min) pending=0 reproducing=0 
+2026/03/22 18:45:59 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (163/min) pending=0 reproducing=0 
+2026/03/22 18:46:09 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (163/min) pending=0 reproducing=0 
+2026/03/22 18:46:19 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (163/min) pending=0 reproducing=0 
+2026/03/22 18:46:29 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:46:39 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:46:49 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:46:59 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:47:09 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:47:19 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:47:29 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:47:39 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:47:49 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (162/min) pending=0 reproducing=0 
+2026/03/22 18:47:58 VM 0: crash: no output from test machine
+2026/03/22 18:47:59 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:48:09 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:48:19 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:48:29 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:48:39 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:48:49 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:48:59 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:49:09 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:49:19 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (161/min) pending=0 reproducing=0 
+2026/03/22 18:49:29 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (160/min) pending=0 reproducing=0 
+2026/03/22 18:49:39 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (160/min) pending=0 reproducing=0 
+2026/03/22 18:49:49 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (160/min) pending=0 reproducing=0 
+2026/03/22 18:49:50 VM 1: crash: no output from test machine
+2026/03/22 18:49:59 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (160/min) pending=0 reproducing=0 
+2026/03/22 18:50:09 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (160/min) pending=0 reproducing=0 
+2026/03/22 18:50:19 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (160/min) pending=0 reproducing=0 
+2026/03/22 18:50:29 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (160/min) pending=0 reproducing=0 
+2026/03/22 18:50:39 call total=220016 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37901 (160/min) pending=0 reproducing=0 
+2026/03/22 18:50:41 runner 0 connected
+2026/03/22 18:50:42 VM 3: crash: no output from test machine
+2026/03/22 18:50:49 call total=220448 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37931 (160/min) pending=0 reproducing=0 
+2026/03/22 18:50:53 VM 2: crash: no output from test machine
+2026/03/22 18:50:59 call total=220828 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37955 (160/min) pending=0 reproducing=0 
+2026/03/22 18:51:09 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (160/min) pending=0 reproducing=0 
+2026/03/22 18:51:19 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (159/min) pending=0 reproducing=0 
+2026/03/22 18:51:29 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (159/min) pending=0 reproducing=0 
+2026/03/22 18:51:39 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (159/min) pending=0 reproducing=0 
+2026/03/22 18:51:49 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (159/min) pending=0 reproducing=0 
+2026/03/22 18:51:59 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (159/min) pending=0 reproducing=0 
+2026/03/22 18:52:09 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (159/min) pending=0 reproducing=0 
+2026/03/22 18:52:19 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (159/min) pending=0 reproducing=0 
+2026/03/22 18:52:29 call total=221068 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37969 (159/min) pending=0 reproducing=0 
+2026/03/22 18:52:39 runner 1 connected
+2026/03/22 18:52:39 call total=221098 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37971 (159/min) pending=0 reproducing=0 
+2026/03/22 18:52:49 call total=221300 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37983 (159/min) pending=0 reproducing=0 
+2026/03/22 18:52:59 call total=221419 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37990 (158/min) pending=0 reproducing=0 
+2026/03/22 18:53:09 call total=221419 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37990 (158/min) pending=0 reproducing=0 
+2026/03/22 18:53:19 call total=221457 (15/sec) candidates=0 corpus=6735 
+coverage=31630 exec total=37993 (158/min) pending=0 reproducing=0 
+2026/03/22 18:53:25 runner 3 connected
+2026/03/22 18:53:29 call total=221875 (15/sec) candidates=0 corpus=6736 
+coverage=31630 exec total=38022 (158/min) pending=0 reproducing=0 
+2026/03/22 18:53:36 runner 2 connected
+2026/03/22 18:53:39 call total=222308 (15/sec) candidates=0 corpus=6736 
+coverage=31630 exec total=38051 (158/min) pending=0 reproducing=0 
+2026/03/22 18:53:49 call total=223055 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38100 (158/min) pending=0 reproducing=0 
+2026/03/22 18:53:59 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (158/min) pending=0 reproducing=0 
+2026/03/22 18:54:09 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (158/min) pending=0 reproducing=0 
+2026/03/22 18:54:19 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (158/min) pending=0 reproducing=0 
+2026/03/22 18:54:29 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (158/min) pending=0 reproducing=0 
+2026/03/22 18:54:39 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (158/min) pending=0 reproducing=0 
+2026/03/22 18:54:49 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (158/min) pending=0 reproducing=0 
+2026/03/22 18:54:59 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (158/min) pending=0 reproducing=0 
+2026/03/22 18:55:09 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:55:19 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:55:29 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:55:39 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:55:49 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:55:59 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:56:09 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:56:11 VM 0: crash: no output from test machine
+2026/03/22 18:56:19 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:56:29 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (157/min) pending=0 reproducing=0 
+2026/03/22 18:56:39 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:56:49 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:56:59 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:57:09 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:57:19 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:57:29 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:57:39 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:57:49 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:57:59 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:58:09 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (156/min) pending=0 reproducing=0 
+2026/03/22 18:58:19 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (155/min) pending=0 reproducing=0 
+2026/03/22 18:58:29 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (155/min) pending=0 reproducing=0 
+2026/03/22 18:58:38 VM 1: crash: no output from test machine
+2026/03/22 18:58:39 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (155/min) pending=0 reproducing=0 
+2026/03/22 18:58:49 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (155/min) pending=0 reproducing=0 
+2026/03/22 18:58:54 VM 3: crash: no output from test machine
+2026/03/22 18:58:55 VM 2: crash: no output from test machine
+2026/03/22 18:58:59 call total=223070 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38101 (155/min) pending=0 reproducing=0 
+2026/03/22 18:58:59 runner 0 connected
+2026/03/22 18:59:09 call total=223350 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38120 (155/min) pending=0 reproducing=0 
+2026/03/22 18:59:19 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (155/min) pending=0 reproducing=0 
+2026/03/22 18:59:29 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (155/min) pending=0 reproducing=0 
+2026/03/22 18:59:39 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (155/min) pending=0 reproducing=0 
+2026/03/22 18:59:49 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (155/min) pending=0 reproducing=0 
+2026/03/22 18:59:59 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:00:09 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:00:19 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:00:29 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:00:39 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:00:49 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:00:59 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:01:09 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:01:19 call total=223380 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38122 (154/min) pending=0 reproducing=0 
+2026/03/22 19:01:27 runner 1 connected
+2026/03/22 19:01:29 call total=223487 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38129 (154/min) pending=0 reproducing=0 
+2026/03/22 19:01:38 runner 3 connected
+2026/03/22 19:01:38 runner 2 connected
+2026/03/22 19:01:39 call total=223969 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38162 (154/min) pending=0 reproducing=0 
+2026/03/22 19:01:49 call total=224538 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38198 (154/min) pending=0 reproducing=0 
+2026/03/22 19:01:59 call total=224905 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38222 (154/min) pending=0 reproducing=0 
+2026/03/22 19:02:09 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (154/min) pending=0 reproducing=0 
+2026/03/22 19:02:19 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:02:29 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:02:39 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:02:49 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:02:59 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:03:09 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:03:19 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:03:29 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:03:39 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (153/min) pending=0 reproducing=0 
+2026/03/22 19:03:49 call total=224921 (15/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:03:59 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:04:09 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:04:18 VM 0: crash: no output from test machine
+2026/03/22 19:04:19 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:04:29 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:04:39 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:04:49 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:04:59 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:05:09 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:05:19 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (152/min) pending=0 reproducing=0 
+2026/03/22 19:05:29 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:05:39 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:05:49 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:05:59 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:06:09 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:06:19 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:06:29 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:06:39 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:06:46 VM 1: crash: no output from test machine
+2026/03/22 19:06:47 VM 2: crash: no output from test machine
+2026/03/22 19:06:49 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:06:59 call total=224921 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38223 (151/min) pending=0 reproducing=0 
+2026/03/22 19:07:02 runner 0 connected
+2026/03/22 19:07:07 VM 3: crash: no output from test machine
+2026/03/22 19:07:09 call total=225110 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38235 (151/min) pending=0 reproducing=0 
+2026/03/22 19:07:19 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:07:29 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:07:39 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:07:49 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:07:59 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:08:09 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:08:19 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:08:29 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:08:39 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:08:49 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (150/min) pending=0 reproducing=0 
+2026/03/22 19:08:59 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (149/min) pending=0 reproducing=0 
+2026/03/22 19:09:09 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (149/min) pending=0 reproducing=0 
+2026/03/22 19:09:19 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (149/min) pending=0 reproducing=0 
+2026/03/22 19:09:29 call total=225262 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38245 (149/min) pending=0 reproducing=0 
+2026/03/22 19:09:31 runner 2 connected
+2026/03/22 19:09:35 runner 1 connected
+2026/03/22 19:09:39 call total=225626 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38269 (149/min) pending=0 reproducing=0 
+2026/03/22 19:09:49 call total=226042 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38295 (149/min) pending=0 reproducing=0 
+2026/03/22 19:09:50 runner 3 connected
+2026/03/22 19:09:59 call total=226345 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38315 (149/min) pending=0 reproducing=0 
+2026/03/22 19:10:09 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (149/min) pending=0 reproducing=0 
+2026/03/22 19:10:19 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (149/min) pending=0 reproducing=0 
+2026/03/22 19:10:29 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (149/min) pending=0 reproducing=0 
+2026/03/22 19:10:39 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (149/min) pending=0 reproducing=0 
+2026/03/22 19:10:49 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (149/min) pending=0 reproducing=0 
+2026/03/22 19:10:59 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (149/min) pending=0 reproducing=0 
+2026/03/22 19:11:09 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (149/min) pending=0 reproducing=0 
+2026/03/22 19:11:19 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:11:29 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:11:39 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:11:49 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:11:59 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:12:09 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:12:19 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:12:21 VM 0: crash: no output from test machine
+2026/03/22 19:12:29 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:12:39 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:12:49 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (148/min) pending=0 reproducing=0 
+2026/03/22 19:12:59 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:13:09 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:13:19 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:13:29 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:13:39 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:13:49 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:13:59 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:14:09 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:14:19 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:14:29 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:14:39 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (147/min) pending=0 reproducing=0 
+2026/03/22 19:14:45 VM 1: crash: no output from test machine
+2026/03/22 19:14:49 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (146/min) pending=0 reproducing=0 
+2026/03/22 19:14:50 VM 2: crash: no output from test machine
+2026/03/22 19:14:59 call total=226603 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38331 (146/min) pending=0 reproducing=0 
+2026/03/22 19:15:04 runner 0 connected
+2026/03/22 19:15:09 call total=226825 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38345 (146/min) pending=0 reproducing=0 
+2026/03/22 19:15:09 VM 3: crash: no output from test machine
+2026/03/22 19:15:19 call total=226893 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38349 (146/min) pending=0 reproducing=0 
+2026/03/22 19:15:29 call total=227102 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38363 (146/min) pending=0 reproducing=0 
+2026/03/22 19:15:39 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (146/min) pending=0 reproducing=0 
+2026/03/22 19:15:49 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (146/min) pending=0 reproducing=0 
+2026/03/22 19:15:59 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (146/min) pending=0 reproducing=0 
+2026/03/22 19:16:09 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (146/min) pending=0 reproducing=0 
+2026/03/22 19:16:19 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (146/min) pending=0 reproducing=0 
+2026/03/22 19:16:29 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (146/min) pending=0 reproducing=0 
+2026/03/22 19:16:39 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (146/min) pending=0 reproducing=0 
+2026/03/22 19:16:49 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (145/min) pending=0 reproducing=0 
+2026/03/22 19:16:59 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (145/min) pending=0 reproducing=0 
+2026/03/22 19:17:09 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (145/min) pending=0 reproducing=0 
+2026/03/22 19:17:19 call total=227275 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38374 (145/min) pending=0 reproducing=0 
+2026/03/22 19:17:27 runner 1 connected
+2026/03/22 19:17:29 call total=227348 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38379 (145/min) pending=0 reproducing=0 
+2026/03/22 19:17:33 runner 2 connected
+2026/03/22 19:17:39 call total=227881 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38414 (145/min) pending=0 reproducing=0 
+2026/03/22 19:17:49 call total=228080 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38428 (145/min) pending=0 reproducing=0 
+2026/03/22 19:17:58 runner 3 connected
+2026/03/22 19:17:59 call total=228126 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38431 (145/min) pending=0 reproducing=0 
+2026/03/22 19:18:09 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (145/min) pending=0 reproducing=0 
+2026/03/22 19:18:19 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (145/min) pending=0 reproducing=0 
+2026/03/22 19:18:29 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (145/min) pending=0 reproducing=0 
+2026/03/22 19:18:39 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (145/min) pending=0 reproducing=0 
+2026/03/22 19:18:49 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (145/min) pending=0 reproducing=0 
+2026/03/22 19:18:59 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (145/min) pending=0 reproducing=0 
+2026/03/22 19:19:09 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:19:19 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:19:29 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:19:39 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:19:49 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:19:59 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:20:09 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:20:19 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:20:29 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:20:34 VM 0: crash: no output from test machine
+2026/03/22 19:20:39 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:20:49 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (144/min) pending=0 reproducing=0 
+2026/03/22 19:20:59 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:21:09 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:21:19 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:21:29 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:21:39 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:21:49 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:21:59 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:22:09 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:22:19 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:22:29 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:22:39 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (143/min) pending=0 reproducing=0 
+2026/03/22 19:22:47 VM 1: crash: no output from test machine
+2026/03/22 19:22:49 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (142/min) pending=0 reproducing=0 
+2026/03/22 19:22:52 VM 2: crash: no output from test machine
+2026/03/22 19:22:59 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (142/min) pending=0 reproducing=0 
+2026/03/22 19:23:09 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (142/min) pending=0 reproducing=0 
+2026/03/22 19:23:17 VM 3: crash: no output from test machine
+2026/03/22 19:23:19 call total=228311 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38443 (142/min) pending=0 reproducing=0 
+2026/03/22 19:23:23 runner 0 connected
+2026/03/22 19:23:29 call total=228569 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38457 (142/min) pending=0 reproducing=0 
+2026/03/22 19:23:39 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (142/min) pending=0 reproducing=0 
+2026/03/22 19:23:49 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (142/min) pending=0 reproducing=0 
+2026/03/22 19:23:59 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (142/min) pending=0 reproducing=0 
+2026/03/22 19:24:09 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (142/min) pending=0 reproducing=0 
+2026/03/22 19:24:19 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (142/min) pending=0 reproducing=0 
+2026/03/22 19:24:29 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (142/min) pending=0 reproducing=0 
+2026/03/22 19:24:39 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (142/min) pending=0 reproducing=0 
+2026/03/22 19:24:49 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (142/min) pending=0 reproducing=0 
+2026/03/22 19:24:59 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (141/min) pending=0 reproducing=0 
+2026/03/22 19:25:09 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (141/min) pending=0 reproducing=0 
+2026/03/22 19:25:19 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (141/min) pending=0 reproducing=0 
+2026/03/22 19:25:29 call total=228805 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38472 (141/min) pending=0 reproducing=0 
+2026/03/22 19:25:30 runner 1 connected
+2026/03/22 19:25:39 call total=229037 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38487 (141/min) pending=0 reproducing=0 
+2026/03/22 19:25:41 runner 2 connected
+2026/03/22 19:25:49 call total=229533 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38518 (141/min) pending=0 reproducing=0 
+2026/03/22 19:25:59 call total=229533 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38518 (141/min) pending=0 reproducing=0 
+2026/03/22 19:26:00 runner 3 connected
+2026/03/22 19:26:09 call total=229706 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38529 (141/min) pending=0 reproducing=0 
+2026/03/22 19:26:19 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (141/min) pending=0 reproducing=0 
+2026/03/22 19:26:29 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (141/min) pending=0 reproducing=0 
+2026/03/22 19:26:39 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (141/min) pending=0 reproducing=0 
+2026/03/22 19:26:49 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (141/min) pending=0 reproducing=0 
+2026/03/22 19:26:59 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (141/min) pending=0 reproducing=0 
+2026/03/22 19:27:09 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (141/min) pending=0 reproducing=0 
+2026/03/22 19:27:19 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:27:29 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:27:39 call total=229910 (14/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:27:49 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:27:59 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:28:09 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:28:19 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:28:29 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:28:39 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:28:42 VM 0: crash: no output from test machine
+2026/03/22 19:28:49 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:28:59 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:29:09 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (140/min) pending=0 reproducing=0 
+2026/03/22 19:29:19 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:29:29 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:29:39 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:29:49 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:29:59 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:30:09 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:30:19 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:30:29 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:30:39 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:30:49 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:30:49 VM 1: crash: no output from test machine
+2026/03/22 19:30:50 VM 2: crash: no output from test machine
+2026/03/22 19:30:59 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:31:09 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (139/min) pending=0 reproducing=0 
+2026/03/22 19:31:19 call total=229910 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38542 (138/min) pending=0 reproducing=0 
+2026/03/22 19:31:19 VM 3: crash: no output from test machine
+2026/03/22 19:31:25 runner 0 connected
+2026/03/22 19:31:29 call total=229998 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38549 (138/min) pending=0 reproducing=0 
+2026/03/22 19:31:39 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:31:49 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:31:59 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:32:09 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:32:19 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:32:29 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:32:39 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:32:49 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:32:59 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:33:09 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:33:19 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (138/min) pending=0 reproducing=0 
+2026/03/22 19:33:29 call total=230211 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38562 (137/min) pending=0 reproducing=0 
+2026/03/22 19:33:33 runner 1 connected
+2026/03/22 19:33:39 call total=230563 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38584 (137/min) pending=0 reproducing=0 
+2026/03/22 19:33:39 runner 2 connected
+2026/03/22 19:33:49 call total=230958 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38610 (137/min) pending=0 reproducing=0 
+2026/03/22 19:33:59 call total=231005 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38613 (137/min) pending=0 reproducing=0 
+2026/03/22 19:34:03 runner 3 connected
+2026/03/22 19:34:09 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:34:19 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:34:29 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:34:39 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:34:49 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:34:59 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:35:09 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:35:19 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:35:29 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:35:39 call total=231047 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38616 (137/min) pending=0 reproducing=0 
+2026/03/22 19:35:49 call total=231121 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38621 (137/min) pending=0 reproducing=0 
+2026/03/22 19:35:59 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:36:09 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:36:19 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:36:29 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:36:39 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:36:44 VM 0: crash: no output from test machine
+2026/03/22 19:36:49 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:36:59 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:37:09 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:37:19 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:37:29 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:37:39 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:37:49 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:37:59 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (136/min) pending=0 reproducing=0 
+2026/03/22 19:38:09 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (135/min) pending=0 reproducing=0 
+2026/03/22 19:38:19 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (135/min) pending=0 reproducing=0 
+2026/03/22 19:38:29 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (135/min) pending=0 reproducing=0 
+2026/03/22 19:38:39 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (135/min) pending=0 reproducing=0 
+2026/03/22 19:38:42 VM 1: crash: no output from test machine
+2026/03/22 19:38:49 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (135/min) pending=0 reproducing=0 
+2026/03/22 19:38:58 VM 2: crash: no output from test machine
+2026/03/22 19:38:59 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (135/min) pending=0 reproducing=0 
+2026/03/22 19:39:09 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (135/min) pending=0 reproducing=0 
+2026/03/22 19:39:19 call total=231343 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38635 (135/min) pending=0 reproducing=0 
+2026/03/22 19:39:27 runner 0 connected
+2026/03/22 19:39:29 call total=231439 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38642 (135/min) pending=0 reproducing=0 
+2026/03/22 19:39:39 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (135/min) pending=0 reproducing=0 
+2026/03/22 19:39:49 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (135/min) pending=0 reproducing=0 
+2026/03/22 19:39:59 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (135/min) pending=0 reproducing=0 
+2026/03/22 19:40:09 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (135/min) pending=0 reproducing=0 
+2026/03/22 19:40:19 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (134/min) pending=0 reproducing=0 
+2026/03/22 19:40:29 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (134/min) pending=0 reproducing=0 
+2026/03/22 19:40:39 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (134/min) pending=0 reproducing=0 
+2026/03/22 19:40:49 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (134/min) pending=0 reproducing=0 
+2026/03/22 19:40:59 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (134/min) pending=0 reproducing=0 
+2026/03/22 19:41:02 VM 3: crash: no output from test machine
+2026/03/22 19:41:09 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (134/min) pending=0 reproducing=0 
+2026/03/22 19:41:19 call total=231618 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38653 (134/min) pending=0 reproducing=0 
+2026/03/22 19:41:25 runner 1 connected
+2026/03/22 19:41:29 call total=231812 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38665 (134/min) pending=0 reproducing=0 
+2026/03/22 19:41:39 call total=232542 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38707 (134/min) pending=0 reproducing=0 
+2026/03/22 19:41:41 runner 2 connected
+2026/03/22 19:41:49 call total=233248 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38749 (134/min) pending=0 reproducing=0 
+2026/03/22 19:41:59 call total=233962 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38791 (134/min) pending=0 reproducing=0 
+2026/03/22 19:42:09 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (134/min) pending=0 reproducing=0 
+2026/03/22 19:42:19 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (134/min) pending=0 reproducing=0 
+2026/03/22 19:42:29 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (134/min) pending=0 reproducing=0 
+2026/03/22 19:42:39 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (134/min) pending=0 reproducing=0 
+2026/03/22 19:42:49 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (134/min) pending=0 reproducing=0 
+2026/03/22 19:42:59 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (134/min) pending=0 reproducing=0 
+2026/03/22 19:43:09 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (134/min) pending=0 reproducing=0 
+2026/03/22 19:43:19 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (134/min) pending=0 reproducing=0 
+2026/03/22 19:43:29 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (133/min) pending=0 reproducing=0 
+2026/03/22 19:43:39 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (133/min) pending=0 reproducing=0 
+2026/03/22 19:43:49 call total=233978 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38792 (133/min) pending=0 reproducing=0 
+2026/03/22 19:43:51 runner 3 connected
+2026/03/22 19:43:59 call total=234117 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38801 (133/min) pending=0 reproducing=0 
+2026/03/22 19:44:09 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:44:19 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:44:29 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:44:37 VM 0: crash: no output from test machine
+2026/03/22 19:44:39 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:44:49 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:44:59 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:45:09 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:45:19 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:45:29 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:45:39 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (133/min) pending=0 reproducing=0 
+2026/03/22 19:45:49 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:45:59 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:46:09 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:46:19 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:46:29 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:46:39 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:46:49 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:46:54 VM 1: crash: no output from test machine
+2026/03/22 19:46:59 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:47:01 VM 2: crash: no output from test machine
+2026/03/22 19:47:09 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:47:19 call total=234267 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38811 (132/min) pending=0 reproducing=0 
+2026/03/22 19:47:20 runner 0 connected
+2026/03/22 19:47:29 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (132/min) pending=0 reproducing=0 
+2026/03/22 19:47:39 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (132/min) pending=0 reproducing=0 
+2026/03/22 19:47:49 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (132/min) pending=0 reproducing=0 
+2026/03/22 19:47:59 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (132/min) pending=0 reproducing=0 
+2026/03/22 19:48:09 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (132/min) pending=0 reproducing=0 
+2026/03/22 19:48:19 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:48:29 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:48:39 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:48:49 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:48:59 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:49:09 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:49:10 VM 3: crash: no output from test machine
+2026/03/22 19:49:19 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:49:29 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:49:39 call total=234688 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38838 (131/min) pending=0 reproducing=0 
+2026/03/22 19:49:43 runner 1 connected
+2026/03/22 19:49:43 runner 2 connected
+2026/03/22 19:49:49 call total=235005 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38858 (131/min) pending=0 reproducing=0 
+2026/03/22 19:49:59 call total=235263 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38874 (131/min) pending=0 reproducing=0 
+2026/03/22 19:50:09 call total=235263 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38874 (131/min) pending=0 reproducing=0 
+2026/03/22 19:50:19 call total=235263 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38874 (131/min) pending=0 reproducing=0 
+2026/03/22 19:50:29 call total=235263 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38874 (131/min) pending=0 reproducing=0 
+2026/03/22 19:50:39 call total=235263 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38874 (131/min) pending=0 reproducing=0 
+2026/03/22 19:50:49 call total=235263 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38874 (130/min) pending=0 reproducing=0 
+2026/03/22 19:50:59 call total=235422 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38885 (130/min) pending=0 reproducing=0 
+2026/03/22 19:51:09 call total=235422 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38885 (130/min) pending=0 reproducing=0 
+2026/03/22 19:51:19 call total=235422 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38885 (130/min) pending=0 reproducing=0 
+2026/03/22 19:51:29 call total=235422 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38885 (130/min) pending=0 reproducing=0 
+2026/03/22 19:51:39 call total=235422 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38885 (130/min) pending=0 reproducing=0 
+2026/03/22 19:51:49 call total=235422 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38885 (130/min) pending=0 reproducing=0 
+2026/03/22 19:51:53 runner 3 connected
+2026/03/22 19:51:59 call total=235475 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38889 (130/min) pending=0 reproducing=0 
+2026/03/22 19:52:09 call total=235475 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38889 (130/min) pending=0 reproducing=0 
+2026/03/22 19:52:19 call total=235475 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38889 (130/min) pending=0 reproducing=0 
+2026/03/22 19:52:29 call total=235475 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38889 (130/min) pending=0 reproducing=0 
+2026/03/22 19:52:29 VM 0: crash: no output from test machine
+2026/03/22 19:52:39 call total=235475 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38889 (130/min) pending=0 reproducing=0 
+2026/03/22 19:52:49 call total=235475 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38889 (130/min) pending=0 reproducing=0 
+2026/03/22 19:52:59 call total=235736 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38905 (130/min) pending=0 reproducing=0 
+2026/03/22 19:53:09 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (130/min) pending=0 reproducing=0 
+2026/03/22 19:53:19 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (130/min) pending=0 reproducing=0 
+2026/03/22 19:53:29 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:53:39 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:53:49 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:53:59 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:54:09 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:54:19 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:54:29 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:54:39 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:54:49 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:54:59 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:55:03 VM 2: crash: no output from test machine
+2026/03/22 19:55:09 call total=235984 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38920 (129/min) pending=0 reproducing=0 
+2026/03/22 19:55:12 runner 0 connected
+2026/03/22 19:55:19 call total=236392 (13/sec) candidates=0 corpus=6737 
+coverage=31631 exec total=38945 (129/min) pending=0 reproducing=0 
+2026/03/22 19:55:27 starting bug reproductions (max 4 VMs, 3 repros)
+2026/03/22 19:55:29 call total=236892 (13/sec) candidates=0 corpus=6738 
+coverage=31631 exec total=38977 (129/min) pending=0 reproducing=0 
+2026/03/22 19:55:39 call total=236892 (13/sec) candidates=0 corpus=6738 
+coverage=31631 exec total=38977 (129/min) pending=0 reproducing=0 
+2026/03/22 19:55:42 minimized corpus: 6738 -&gt; 6656
+2026/03/22 19:55:49 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (129/min) pending=0 reproducing=0 
+2026/03/22 19:55:59 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (129/min) pending=0 reproducing=0 
+2026/03/22 19:56:02 VM 1: crash: no output from test machine
+2026/03/22 19:56:09 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:56:19 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:56:29 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:56:39 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:56:49 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:56:59 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:57:09 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:57:19 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:57:29 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:57:39 call total=236892 (13/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38977 (128/min) pending=0 reproducing=0 
+2026/03/22 19:57:45 runner 2 connected
+2026/03/22 19:57:49 call total=236934 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38980 (128/min) pending=0 reproducing=0 
+2026/03/22 19:57:59 call total=236934 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38980 (128/min) pending=0 reproducing=0 
+2026/03/22 19:58:09 call total=237141 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38993 (128/min) pending=0 reproducing=0 
+2026/03/22 19:58:13 VM 3: crash: no output from test machine
+2026/03/22 19:58:19 call total=237141 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38993 (128/min) pending=0 reproducing=0 
+2026/03/22 19:58:29 call total=237141 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38993 (128/min) pending=0 reproducing=0 
+2026/03/22 19:58:39 call total=237141 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=38993 (127/min) pending=0 reproducing=0 
+2026/03/22 19:58:45 runner 1 connected
+2026/03/22 19:58:49 call total=237356 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39006 (127/min) pending=0 reproducing=0 
+2026/03/22 19:58:59 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 19:59:09 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 19:59:19 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 19:59:29 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 19:59:39 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 19:59:49 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 19:59:59 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 20:00:09 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 20:00:19 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 20:00:29 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 20:00:31 VM 0: crash: no output from test machine
+2026/03/22 20:00:39 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 20:00:49 call total=237424 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39011 (127/min) pending=0 reproducing=0 
+2026/03/22 20:00:55 runner 3 connected
+2026/03/22 20:00:59 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (127/min) pending=0 reproducing=0 
+2026/03/22 20:01:09 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (127/min) pending=0 reproducing=0 
+2026/03/22 20:01:19 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:01:29 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:01:39 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:01:49 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:01:59 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:02:09 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:02:19 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:02:29 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:02:39 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:02:49 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:02:59 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:03:09 call total=237622 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39023 (126/min) pending=0 reproducing=0 
+2026/03/22 20:03:14 runner 0 connected
+2026/03/22 20:03:15 VM 2: crash: no output from test machine
+2026/03/22 20:03:19 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (126/min) pending=0 reproducing=0 
+2026/03/22 20:03:29 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (126/min) pending=0 reproducing=0 
+2026/03/22 20:03:39 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (126/min) pending=0 reproducing=0 
+2026/03/22 20:03:49 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:03:55 VM 1: crash: no output from test machine
+2026/03/22 20:03:59 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:04:09 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:04:19 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:04:29 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:04:39 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:04:49 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:04:59 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:05:09 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:05:19 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:05:29 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:05:39 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:05:49 call total=237828 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39036 (125/min) pending=0 reproducing=0 
+2026/03/22 20:05:57 runner 2 connected
+2026/03/22 20:05:59 call total=237925 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39041 (125/min) pending=0 reproducing=0 
+2026/03/22 20:06:05 VM 3: crash: no output from test machine
+2026/03/22 20:06:09 call total=238287 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39067 (125/min) pending=0 reproducing=0 
+2026/03/22 20:06:19 call total=238397 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39075 (125/min) pending=0 reproducing=0 
+2026/03/22 20:06:29 call total=238397 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39075 (125/min) pending=0 reproducing=0 
+2026/03/22 20:06:39 call total=238397 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39075 (124/min) pending=0 reproducing=0 
+2026/03/22 20:06:43 runner 1 connected
+2026/03/22 20:06:49 call total=238515 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39088 (124/min) pending=0 reproducing=0 
+2026/03/22 20:06:59 call total=239269 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39164 (125/min) pending=0 reproducing=0 
+2026/03/22 20:07:09 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (125/min) pending=0 reproducing=0 
+2026/03/22 20:07:10 VM 1: crash: SYZFAIL: child stopped
+2026/03/22 20:07:19 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:07:29 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:07:39 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:07:49 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:07:59 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:08:09 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:08:19 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:08:24 VM 0: crash: no output from test machine
+2026/03/22 20:08:29 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:08:39 call total=239325 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39167 (124/min) pending=0 reproducing=0 
+2026/03/22 20:08:47 runner 3 connected
+2026/03/22 20:08:49 call total=239452 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39174 (124/min) pending=0 reproducing=0 
+2026/03/22 20:08:59 call total=239613 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39185 (124/min) pending=0 reproducing=0 
+2026/03/22 20:09:09 call total=239926 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39204 (124/min) pending=0 reproducing=0 
+2026/03/22 20:09:19 call total=239926 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39204 (124/min) pending=0 reproducing=0 
+2026/03/22 20:09:29 call total=239926 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39204 (124/min) pending=0 reproducing=0 
+2026/03/22 20:09:39 call total=239926 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39204 (124/min) pending=0 reproducing=0 
+2026/03/22 20:09:49 call total=239926 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39204 (124/min) pending=0 reproducing=0 
+2026/03/22 20:09:54 runner 1 connected
+2026/03/22 20:09:59 call total=240362 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39235 (124/min) pending=0 reproducing=0 
+2026/03/22 20:10:09 call total=240873 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39273 (124/min) pending=0 reproducing=0 
+2026/03/22 20:10:16 VM-1 failed reading regs: qemu hmp command 'info 
+registers': dial tcp 127.0.0.1:56361: connect: connection refused
+2026/03/22 20:10:16 VM-1 failed reading regs: qemu hmp command 'info 
+registers': dial tcp 127.0.0.1:56361: connect: connection refused
+2026/03/22 20:10:19 call total=240873 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39273 (124/min) pending=0 reproducing=0 
+2026/03/22 20:10:26 VM 1: crash: lost connection to test machine
+2026/03/22 20:10:29 call total=240873 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39273 (124/min) pending=0 reproducing=0 
+2026/03/22 20:10:39 call total=240873 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39273 (124/min) pending=0 reproducing=0 
+2026/03/22 20:10:49 call total=240873 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39273 (123/min) pending=0 reproducing=0 
+2026/03/22 20:10:59 call total=240873 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39273 (123/min) pending=0 reproducing=0 
+2026/03/22 20:11:07 runner 0 connected
+2026/03/22 20:11:09 call total=241060 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39282 (123/min) pending=0 reproducing=0 
+2026/03/22 20:11:17 VM 2: crash: no output from test machine
+2026/03/22 20:11:19 call total=241362 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39299 (123/min) pending=0 reproducing=0 
+2026/03/22 20:11:29 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:11:39 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:11:49 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:11:59 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:12:09 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:12:19 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:12:29 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:12:39 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:12:49 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:12:59 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:13:09 call total=241474 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39305 (123/min) pending=0 reproducing=0 
+2026/03/22 20:13:14 runner 1 connected
+2026/03/22 20:13:19 call total=241539 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39313 (123/min) pending=0 reproducing=0 
+2026/03/22 20:13:29 call total=241539 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39313 (123/min) pending=0 reproducing=0 
+2026/03/22 20:13:39 call total=241539 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39313 (122/min) pending=0 reproducing=0 
+2026/03/22 20:13:49 call total=241726 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39329 (122/min) pending=0 reproducing=0 
+2026/03/22 20:13:59 call total=242044 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39351 (122/min) pending=0 reproducing=0 
+2026/03/22 20:14:05 runner 2 connected
+2026/03/22 20:14:07 VM 3: crash: no output from test machine
+2026/03/22 20:14:09 call total=242354 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39367 (122/min) pending=0 reproducing=0 
+2026/03/22 20:14:19 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:14:29 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:14:39 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:14:49 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:14:59 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:15:09 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:15:19 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:15:29 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:15:39 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:15:49 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:15:59 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:16:09 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:16:19 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:16:26 VM 0: crash: no output from test machine
+2026/03/22 20:16:29 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:16:39 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (122/min) pending=0 reproducing=0 
+2026/03/22 20:16:49 call total=242716 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39387 (121/min) pending=0 reproducing=0 
+2026/03/22 20:16:55 runner 3 connected
+2026/03/22 20:16:59 call total=242900 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39397 (121/min) pending=0 reproducing=0 
+2026/03/22 20:17:09 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:17:19 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:17:29 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:17:39 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:17:49 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:17:59 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:18:09 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:18:19 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:18:29 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:18:39 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:18:49 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:18:59 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:19:03 VM 1: crash: no output from test machine
+2026/03/22 20:19:09 call total=243303 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39429 (121/min) pending=0 reproducing=0 
+2026/03/22 20:19:09 runner 0 connected
+2026/03/22 20:19:14 VM 2: crash: no output from test machine
+2026/03/22 20:19:19 call total=243700 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39453 (121/min) pending=0 reproducing=0 
+2026/03/22 20:19:29 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (121/min) pending=0 reproducing=0 
+2026/03/22 20:19:39 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (121/min) pending=0 reproducing=0 
+2026/03/22 20:19:49 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (121/min) pending=0 reproducing=0 
+2026/03/22 20:19:59 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (121/min) pending=0 reproducing=0 
+2026/03/22 20:20:09 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:20:19 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:20:29 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:20:39 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:20:49 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:20:59 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:21:09 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:21:19 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:21:29 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:21:39 call total=243712 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39454 (120/min) pending=0 reproducing=0 
+2026/03/22 20:21:47 runner 1 connected
+2026/03/22 20:21:49 call total=243856 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39463 (120/min) pending=0 reproducing=0 
+2026/03/22 20:21:59 call total=244311 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39499 (120/min) pending=0 reproducing=0 
+2026/03/22 20:22:03 runner 2 connected
+2026/03/22 20:22:09 call total=245296 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39564 (120/min) pending=0 reproducing=0 
+2026/03/22 20:22:15 VM 3: crash: no output from test machine
+2026/03/22 20:22:19 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:22:29 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:22:39 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:22:49 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:22:59 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:23:09 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:23:19 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:23:29 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:23:39 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:23:49 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:23:59 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (120/min) pending=0 reproducing=0 
+2026/03/22 20:24:09 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (119/min) pending=0 reproducing=0 
+2026/03/22 20:24:19 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (119/min) pending=0 reproducing=0 
+2026/03/22 20:24:28 VM 0: crash: no output from test machine
+2026/03/22 20:24:29 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (119/min) pending=0 reproducing=0 
+2026/03/22 20:24:39 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (119/min) pending=0 reproducing=0 
+2026/03/22 20:24:49 call total=245952 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39621 (119/min) pending=0 reproducing=0 
+2026/03/22 20:24:58 runner 3 connected
+2026/03/22 20:24:59 call total=246014 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39626 (119/min) pending=0 reproducing=0 
+2026/03/22 20:25:09 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:25:19 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:25:29 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:25:39 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:25:49 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:25:59 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:26:09 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:26:19 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:26:29 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:26:39 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:26:49 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:26:59 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (119/min) pending=0 reproducing=0 
+2026/03/22 20:27:09 call total=246195 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39637 (118/min) pending=0 reproducing=0 
+2026/03/22 20:27:11 runner 0 connected
+2026/03/22 20:27:16 VM 1: crash: no output from test machine
+2026/03/22 20:27:19 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:27:22 VM 2: crash: no output from test machine
+2026/03/22 20:27:29 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:27:39 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:27:49 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:27:59 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:28:09 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:28:19 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:28:29 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:28:39 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:28:49 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:28:59 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:29:09 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:29:19 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:29:29 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:29:39 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:29:49 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (118/min) pending=0 reproducing=0 
+2026/03/22 20:29:59 call total=246374 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39649 (117/min) pending=0 reproducing=0 
+2026/03/22 20:30:00 runner 1 connected
+2026/03/22 20:30:06 runner 2 connected
+2026/03/22 20:30:07 VM 3: crash: no output from test machine
+2026/03/22 20:30:09 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (118/min) pending=0 reproducing=0 
+2026/03/22 20:30:19 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:30:29 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:30:39 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:30:49 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:30:59 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:31:09 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:31:19 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:31:29 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:31:39 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:31:49 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:31:59 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:32:09 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:32:19 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:32:21 VM 0: crash: no output from test machine
+2026/03/22 20:32:29 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:32:39 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:32:49 call total=246715 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39673 (117/min) pending=0 reproducing=0 
+2026/03/22 20:32:50 runner 3 connected
+2026/03/22 20:32:59 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (117/min) pending=0 reproducing=0 
+2026/03/22 20:33:09 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (117/min) pending=0 reproducing=0 
+2026/03/22 20:33:19 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:33:29 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:33:39 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:33:49 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:33:59 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:34:09 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:34:19 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:34:29 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:34:39 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:34:49 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:34:59 call total=246877 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39687 (116/min) pending=0 reproducing=0 
+2026/03/22 20:35:04 runner 0 connected
+2026/03/22 20:35:09 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (116/min) pending=0 reproducing=0 
+2026/03/22 20:35:09 VM 1: crash: no output from test machine
+2026/03/22 20:35:15 VM 2: crash: no output from test machine
+2026/03/22 20:35:19 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (116/min) pending=0 reproducing=0 
+2026/03/22 20:35:29 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (116/min) pending=0 reproducing=0 
+2026/03/22 20:35:39 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (116/min) pending=0 reproducing=0 
+2026/03/22 20:35:49 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (116/min) pending=0 reproducing=0 
+2026/03/22 20:35:59 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (116/min) pending=0 reproducing=0 
+2026/03/22 20:36:09 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:36:19 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:36:29 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:36:39 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:36:49 call total=246908 (12/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:36:59 call total=246908 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:37:09 call total=246908 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:37:19 call total=246908 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:37:29 call total=246908 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:37:39 call total=246908 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:37:49 call total=246908 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39691 (115/min) pending=0 reproducing=0 
+2026/03/22 20:37:57 runner 1 connected
+2026/03/22 20:37:57 runner 2 connected
+2026/03/22 20:37:59 call total=247107 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39711 (115/min) pending=0 reproducing=0 
+2026/03/22 20:38:00 VM 3: crash: no output from test machine
+2026/03/22 20:38:09 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (115/min) pending=0 reproducing=0 
+2026/03/22 20:38:19 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (115/min) pending=0 reproducing=0 
+2026/03/22 20:38:29 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (115/min) pending=0 reproducing=0 
+2026/03/22 20:38:39 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (115/min) pending=0 reproducing=0 
+2026/03/22 20:38:49 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (115/min) pending=0 reproducing=0 
+2026/03/22 20:38:59 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (115/min) pending=0 reproducing=0 
+2026/03/22 20:39:09 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (115/min) pending=0 reproducing=0 
+2026/03/22 20:39:19 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (115/min) pending=0 reproducing=0 
+2026/03/22 20:39:29 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (114/min) pending=0 reproducing=0 
+2026/03/22 20:39:39 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (114/min) pending=0 reproducing=0 
+2026/03/22 20:39:49 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (114/min) pending=0 reproducing=0 
+2026/03/22 20:39:59 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (114/min) pending=0 reproducing=0 
+2026/03/22 20:40:09 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (114/min) pending=0 reproducing=0 
+2026/03/22 20:40:13 VM 0: crash: no output from test machine
+2026/03/22 20:40:19 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (114/min) pending=0 reproducing=0 
+2026/03/22 20:40:29 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (114/min) pending=0 reproducing=0 
+2026/03/22 20:40:39 call total=247234 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39718 (114/min) pending=0 reproducing=0 
+2026/03/22 20:40:43 runner 3 connected
+2026/03/22 20:40:49 call total=247586 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39749 (114/min) pending=0 reproducing=0 
+2026/03/22 20:40:59 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:41:09 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:41:19 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:41:29 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:41:39 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:41:49 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:41:59 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:42:09 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:42:19 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:42:29 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (114/min) pending=0 reproducing=0 
+2026/03/22 20:42:39 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (113/min) pending=0 reproducing=0 
+2026/03/22 20:42:49 call total=247599 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39750 (113/min) pending=0 reproducing=0 
+2026/03/22 20:42:56 runner 0 connected
+2026/03/22 20:42:59 call total=247647 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39754 (113/min) pending=0 reproducing=0 
+2026/03/22 20:43:07 VM 1: crash: no output from test machine
+2026/03/22 20:43:07 VM 2: crash: no output from test machine
+2026/03/22 20:43:09 call total=247647 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39754 (113/min) pending=0 reproducing=0 
+2026/03/22 20:43:19 call total=247759 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39766 (113/min) pending=0 reproducing=0 
+2026/03/22 20:43:22 VM 0: crash: panic: userspace panic:
+2026/03/22 20:43:29 call total=247759 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39766 (113/min) pending=0 reproducing=0 
+2026/03/22 20:43:39 call total=247759 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39766 (113/min) pending=0 reproducing=0 
+2026/03/22 20:43:49 call total=247759 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39766 (113/min) pending=0 reproducing=0 
+2026/03/22 20:43:59 call total=247759 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39766 (113/min) pending=0 reproducing=0 
+2026/03/22 20:44:09 call total=247759 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39766 (113/min) pending=0 reproducing=0 
+2026/03/22 20:44:19 call total=247759 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39766 (113/min) pending=0 reproducing=0 
+2026/03/22 20:44:29 call total=247759 (11/sec) candidates=0 corpus=6656 
+coverage=31631 exec total=39766 (113/min) pending=0 reproducing=0 
+
+</textarea>
+<script>
+	var textarea = document.getElementById("log_textarea");
+	textarea.scrollTop = textarea.scrollHeight;
+</script>
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>

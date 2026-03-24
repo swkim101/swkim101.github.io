@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Running Syzkaller against XNU kernel">
+
+  <!-- Facebook Meta Tags -->
+  <meta property="og:url" content="https://sung-woo.kim/b/syz-xnu/new-syscalls.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Support new syscalls">
+  <meta property="og:description" content="Running Syzkaller against XNU kernel">
+  <meta property="og:site_name" content="Running Syzkaller against XNU kernel">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image" content="https://sung-woo.kim/og.jpg">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="Running Syzkaller against XNU kernel">
+  <meta property="twitter:domain" content="sung-woo.kim">
+  <meta property="twitter:url" content="https://sung-woo.kim/b/syz-xnu/new-syscalls.html">
+  <meta name="twitter:title" content="Support new syscalls">
+  <meta name="twitter:description" content="Running Syzkaller against XNU kernel">
+  <meta name="twitter:image" content="https://sung-woo.kim/og.jpg">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Support new syscalls</title>
+  <link rel="stylesheet" href="../normalize.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../markdown.css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+</head>
+<body>
+    <main>
+        <article class="markdown-content">
+<h1>Support new syscalls</h1>
+<p>Last updated: Mar. 23, 2026 by Sungwoo Kim.</p>
+<p><a href="./index.html">Return to the index</a></p>
+<p>XNU is a hybrid kernel composed of BSD (POSIX interface) and Mach (RPC layer). Although Syzkaller supports XNU syscall fuzzing, its coverage is limited to the legacy BSD surface and leaves most Mach and newly introduced BSD syscalls uncovered. As a result, vulnerabilities in Mach and newer BSD interfaces are easily missed. To cover these paths, Syzkaller must be provided with accurate syscall descriptions in syzlang.</p>
+<p>Automatically converting syscalls to syzlang is a known challenge<sup id="fnref:auto"><a href="#fn:auto" class="footnote-ref">1</a></sup>. While several studies<sup id="fnref:ksg"><a href="#fn:ksg" class="footnote-ref">2</a></sup><sup id="fnref:syzgen"><a href="#fn:syzgen" class="footnote-ref">3</a></sup><sup id="fnref:syzgen2"><a href="#fn:syzgen2" class="footnote-ref">4</a></sup><sup id="fnref:moonshine"><a href="#fn:moonshine" class="footnote-ref">5</a></sup> proposed automatic extraction using profiling, symbolic execution, and static analysis, their implementations are no longer maintained and are not compatible with current kernels. I therefore developed a new tool with generality as a primary design goal, so it remains compatible across multiple XNU versions, including future releases where possible.</p>
+<p>To achieve this, I implemented a lightweight transpiler, <code>c2syz</code>, which converts C function definitions into syzlang using an LLVM pass. It consumes Mach and BSD syscall definitions from the kernel sources and emits syzlang descriptions. The source is available at <a href="https://github.com/swkim101/syz-xnu/tree/main/c2syz">https://github.com/swkim101/syz-xnu/tree/main/c2syz</a></p>
+<h2>Syscalls conversion</h2>
+<pre><code class="language-c"><span class="tok-keyword">extern</span> kern_return_t pid_for_task(
+    mach_port_name_t t,
+    <span class="tok-keyword">int</span> *x
+);</code></pre>
+<p>is converted to</p>
+<pre><code class="language-syzlang">pid_for_task(t mach_port_name_t, x int_inout) kern_return_t</code></pre>
+<p>via a simple one-on-one mapping. Types are recursively resolved through typedef chains until primitive types are reached. Nested structures are more complex to resolve:</p>
+<pre><code class="language-c"><span class="tok-keyword">typedef</span> <span class="tok-keyword">struct</span> mach_port_options {
+	uint32_t                flags;
+	mach_port_limits_t      mpl;
+	<span class="tok-keyword">union</span> {
+		uint64_t                   reserved[<span class="tok-number">2</span>];
+		mach_port_name_t           work_interval_port;
+[snip]</code></pre>
+<p>As shown, the union is anonymous, which is not allowed in syzlang. In this case, <code>c2syz</code> assigns a name with identifiers as follows:</p>
+<pre><code class="language-syzlang">struct_mach_port_options {
+	flags uint32_t
+	mpl mach_port_limits_t
+	unname_2 unnamed_110871574501872
+}
+unnamed_110871574501872 [
+	reserved uint64_t_2
+	work_interval_port mach_port_name_t
+	service_port_info mach_service_port_info_t
+	service_port_name mach_port_name_t
+]</code></pre>
+<p>This approach allows <code>c2syz</code> to generate both Mach and BSD syscall descriptions in syzlang.</p>
+<h3>Tip for mach_port_t</h3>
+<p>The primary role of the Mach kernel is RPC handling. All RPC operations require <code>mach_port_t</code>, an abstract identifier used by Mach IPC. Accordingly, Mach syscalls frequently produce and/or consume <code>mach_port_t</code> values.</p>
+<p>From a fuzzing perspective, generating a valid <code>mach_port_t</code> is important. Otherwise, invalid <code>mach_port_t</code> values fail early validation, and fuzzing inputs cannot reach core logic. This can be addressed using the <code>resource</code> keyword<sup id="fnref:resource"><a href="#fn:resource" class="footnote-ref">6</a></sup>. In practice, defining <code>resource mach_port_t[int32]</code> resolves the dependency issue.</p>
+<p><code>syzkaller/sys/darwin/bsd.txt</code> and <code>syzkaller/sys/darwin/mach.txt</code> include the outputs.</p>
+<h2>Limitation</h2>
+<p><code>c2syz</code> cannot resolve complex dependencies between system calls. Also, <code>c2syz</code> naively assumes all pointer arguments are both readable and writable. To resolve the dependency and pointer semantics, IMF<sup id="fnref:imf"><a href="#fn:imf" class="footnote-ref">7</a></sup>, Moonshine<sup id="fnref:moonshine"><a href="#fn:moonshine" class="footnote-ref">5</a></sup>, syzgen<sup id="fnref:syzgen"><a href="#fn:syzgen" class="footnote-ref">3</a></sup>, Healer<sup id="fnref:healer"><a href="#fn:healer" class="footnote-ref">8</a></sup>, and SyzDescribe<sup id="fnref:syzdescribe"><a href="#fn:syzdescribe" class="footnote-ref">9</a></sup> provide more advanced design strategies.</p>
+<p><a href="./index.html">Return to the index</a></p>
+<section class="footnotes">
+<hr />
+<ol>
+  <li id="fn:auto"><a href="https://github.com/google/syzkaller/issues/590">https://github.com/google/syzkaller/issues/590</a> <a href="#fnref:auto" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:ksg"><a href="https://www.usenix.org/system/files/atc22-sun.pdf">https://www.usenix.org/system/files/atc22-sun.pdf</a> <a href="#fnref:ksg" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:syzgen"><a href="https://dl.acm.org/doi/pdf/10.1145/3460120.3484564">https://dl.acm.org/doi/pdf/10.1145/3460120.3484564</a> <a href="#fnref:syzgen" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:syzgen2"><a href="https://ieeexplore.ieee.org/document/10646807">https://ieeexplore.ieee.org/document/10646807</a> <a href="#fnref:syzgen2" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:moonshine"><a href="https://dl.acm.org/doi/pdf/10.1145/3133956.3134103">https://dl.acm.org/doi/pdf/10.1145/3133956.3134103</a> <a href="#fnref:moonshine" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:resource"><a href="https://github.com/google/syzkaller/blob/master/docs/syscall_descriptions_syntax.md#resources">https://github.com/google/syzkaller/blob/master/docs/syscall_descriptions_syntax.md#resources</a> <a href="#fnref:resource" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:imf"><a href="https://acmccs.github.io/papers/p2345-hanA.pdf">https://acmccs.github.io/papers/p2345-hanA.pdf</a> <a href="#fnref:imf" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:healer"><a href="https://dl.acm.org/doi/pdf/10.1145/3477132.3483547">https://dl.acm.org/doi/pdf/10.1145/3477132.3483547</a> <a href="#fnref:healer" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:syzdescribe"><a href="https://ieeexplore.ieee.org/document/10179298">https://ieeexplore.ieee.org/document/10179298</a> <a href="#fnref:syzdescribe" class="footnote-backref" aria-label="Back to content">back</a></li>
+</ol>
+</section>
+        </article>
+    </main>
+</body>
+</html>

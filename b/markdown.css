@@ -1,0 +1,117 @@
+body {
+  font-family: sans-serif;
+  line-height: 1.6;
+}
+
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  line-height: 1.25;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content p,
+.markdown-content ul,
+.markdown-content pre {
+  margin: 0.75rem 0;
+}
+
+.markdown-content .video-embed {
+  max-width: 640px;
+  margin: 1rem auto;
+}
+
+.markdown-content .video-embed video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #e3e8ee;
+  background: #000;
+}
+
+.markdown-content .image-embed {
+  max-width: 860px;
+  margin: 1rem auto;
+}
+
+.markdown-content .image-embed img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #e3e8ee;
+  background: #fff;
+}
+
+.markdown-content nav.toc {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d8dee4;
+  border-radius: 6px;
+  background: #f7f9fb;
+}
+
+.markdown-content nav.toc h2 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.markdown-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95em;
+}
+
+.markdown-content pre {
+  overflow-x: auto;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #e3e8ee;
+  background: #f6f8fa;
+}
+
+.markdown-content pre code {
+  display: block;
+  white-space: pre;
+}
+
+.markdown-content .tok-comment {
+  color: #6a737d;
+}
+
+.markdown-content .tok-keyword {
+  color: #005cc5;
+  font-weight: 600;
+}
+
+.markdown-content .tok-string {
+  color: #0a7a34;
+}
+
+.markdown-content .tok-number {
+  color: #b31d28;
+}
+
+.markdown-content .tok-variable {
+  color: #6f42c1;
+}
+
+.markdown-content .tok-builtin {
+  color: #116329;
+  font-weight: 600;
+}
+
+.footnotes {
+  margin-top: 2rem;
+  font-size: 0.95em;
+}
+
+.footnote-backref {
+  margin-left: 0.4rem;
+}

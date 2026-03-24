@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Running Syzkaller against XNU kernel">
+
+  <!-- Facebook Meta Tags -->
+  <meta property="og:url" content="https://sung-woo.kim/b/syz-xnu/index.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="syzkaller-xnu">
+  <meta property="og:description" content="Running Syzkaller against XNU kernel">
+  <meta property="og:site_name" content="Running Syzkaller against XNU kernel">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image" content="https://sung-woo.kim/og.jpg">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="Running Syzkaller against XNU kernel">
+  <meta property="twitter:domain" content="sung-woo.kim">
+  <meta property="twitter:url" content="https://sung-woo.kim/b/syz-xnu/index.html">
+  <meta name="twitter:title" content="syzkaller-xnu">
+  <meta name="twitter:description" content="Running Syzkaller against XNU kernel">
+  <meta name="twitter:image" content="https://sung-woo.kim/og.jpg">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>syzkaller-xnu</title>
+  <link rel="stylesheet" href="../normalize.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../markdown.css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+</head>
+<body>
+    <main>
+        <article class="markdown-content">
+<h1>syzkaller-xnu</h1>
+<p>Last updated: Mar. 23, 2026 by Sungwoo Kim.</p>
+<p>Syzkaller<sup id="fnref:syzkaller"><a href="#fn:syzkaller" class="footnote-ref">1</a></sup> has discovered 1,000+ bugs across multiple operating systems, including Apple&#x27;s XNU kernel. However, the last update to XNU support was five years ago (for macOS 11.5) and no longer works on recent kernels. In addition, it mainly covers legacy system calls, leaving Mach and newly introduced system calls largely uncovered.</p>
+<p>I therefore extended Syzkaller to support recent XNU kernels, including Mach system calls. The two primary technical challenges were (1) building XNU with KCOV and sanitizers, and (2) automatically extracting syscall descriptions. Challenge (1) is an engineering task, and <a href="./build-xnu.html">this</a> documents the workflow and operational tips. For (2), I developed a transpiler that automatically converts system call definitions into syzlang. <a href="./new-syscalls.html">This</a> describes the design and limitations.</p>
+<p>As a result, I ran Syzkaller on macOS 15.x in emulation and identified five previously unknown bugs. I reported these issues to Apple about six months ago, and three bugs are now fixed. <a href="./bugs.html">This</a> provides the bug analysis.</p>
+<p>Source code is availabe at <a href="https://github.com/swkim101/syz-xnu">https://github.com/swkim101/syz-xnu</a></p>
+<p>Index:</p>
+<ol>
+  <li><a href="./build-xnu.html">Building an KCOV- and sanitizer-enabled XNU kernel</a></li>
+  <li><a href="./new-syscalls.html">Supporting new syscalls</a></li>
+  <li><a href="./bugs.html">Bug discovery</a></li>
+</ol>
+<h2>Demo</h2>
+<p>Syzkaller coverage reports: <a href="./syzkaller.htm">dashboard</a> / <a href="./stats.htm">graphs</a> / <a href="./cover.htm">coverage (43MB)</a></p>
+<p>Crash demo:</p>
+<p>A non-root user can trigger an unexpected reboot. It is currently fixed.</p>
+<figure class="video-embed"><video controls preload="metadata" playsinline><source src="aio_m2.mp4" /></video></figure>
+<p>PoC source: <a href="./aio.c">aio.c</a>. Additional bugs and PoCs are documented in <a href="./bugs.html">Bug discovery</a>.</p>
+<h2>Limitations</h2>
+<ul>
+  <li>The demo fuzzer targets macOS 15.x (released about a year ago). Releasing a fuzzer for the latest macOS build may not be appropriate for several practical reasons.</li>
+  <li>Only x86_64 kernels are supported. Building the kernel for Apple Silicon currently fails due to unresolved register issues. Some bugs (but not all) were reproduced on both Intel and Apple Silicon.</li>
+  <li>Closed-source kernel extensions are not covered.</li>
+</ul>
+<h2>Related works</h2>
+<ul>
+  <li>KextFuzz<sup id="fnref:kextfuzz"><a href="#fn:kextfuzz" class="footnote-ref">2</a></sup> cleverly converted pointer authentication codes (PAC) into coverage probes, enabling coverage collection from closed-source kexts.</li>
+  <li>CrossFire<sup id="fnref:crossfire"><a href="#fn:crossfire" class="footnote-ref">3</a></sup> proposed a novel attack surface, Apple Silicon&#x27;s GPU and NPU memory that are shared with CPUs.</li>
+  <li>Pop and Push<sup id="fnref:pop"><a href="#fn:pop" class="footnote-ref">4</a></sup> suggested a novel attack and defense model using Mach ports.</li>
+  <li>Cai et. al.<sup id="fnref:cai"><a href="#fn:cai" class="footnote-ref">5</a></sup> systematically analyzed how PAC works in M1 and found several gadgets that potentially bypass PA.</li>
+</ul>
+<section class="footnotes">
+<hr />
+<ol>
+  <li id="fn:syzkaller"><a href="https://github.com/google/syzkaller">https://github.com/google/syzkaller</a> <a href="#fnref:syzkaller" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:kextfuzz"><a href="https://www.usenix.org/system/files/usenixsecurity23-yin.pdf">https://www.usenix.org/system/files/usenixsecurity23-yin.pdf</a> <a href="#fnref:kextfuzz" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:crossfire"><a href="https://dl.acm.org/doi/pdf/10.1145/3658644.3690376">https://dl.acm.org/doi/pdf/10.1145/3658644.3690376</a> <a href="#fnref:crossfire" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:pop"><a href="https://www.ndss-symposium.org/wp-content/uploads/ndss2021_5B-2_23126_paper.pdf">https://www.ndss-symposium.org/wp-content/uploads/ndss2021_5B-2_23126_paper.pdf</a> <a href="#fnref:pop" class="footnote-backref" aria-label="Back to content">back</a></li>
+  <li id="fn:cai"><a href="https://www.usenix.org/system/files/usenixsecurity23-cai-zechao.pdf">https://www.usenix.org/system/files/usenixsecurity23-cai-zechao.pdf</a> <a href="#fnref:cai" class="footnote-backref" aria-label="Back to content">back</a></li>
+</ol>
+</section>
+        </article>
+    </main>
+</body>
+</html>

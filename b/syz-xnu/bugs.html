@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Running Syzkaller against XNU kernel">
+
+  <!-- Facebook Meta Tags -->
+  <meta property="og:url" content="https://sung-woo.kim/b/syz-xnu/bugs.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Bug discovery">
+  <meta property="og:description" content="Running Syzkaller against XNU kernel">
+  <meta property="og:site_name" content="Running Syzkaller against XNU kernel">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image" content="https://sung-woo.kim/og.jpg">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="Running Syzkaller against XNU kernel">
+  <meta property="twitter:domain" content="sung-woo.kim">
+  <meta property="twitter:url" content="https://sung-woo.kim/b/syz-xnu/bugs.html">
+  <meta name="twitter:title" content="Bug discovery">
+  <meta name="twitter:description" content="Running Syzkaller against XNU kernel">
+  <meta name="twitter:image" content="https://sung-woo.kim/og.jpg">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bug discovery</title>
+  <link rel="stylesheet" href="../normalize.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../markdown.css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+</head>
+<body>
+    <main>
+        <article class="markdown-content">
+<h1>Bug discovery</h1>
+<p>Last updated: Mar. 23, 2026 by Sungwoo Kim.</p>
+<p><a href="./index.html">Return to the index</a></p>
+<p>Five previously unknown bugs are identified. All findings were reported and three bugs have been fixed.</p>
+<p>DISCLAIMER:</p>
+<p>The proof-of-concept (POC) codes are provided for educational and research purposes only. They demonstrates vulnerabilities that have already been patched by Apple and should not be used to attack unpatched systems.</p>
+<p>No CVE has been assigned to these issues by the vendor as of this writing. The authors do not condone or support any illegal or malicious use of this code. Use it responsibly and only in controlled environments.</p>
+<h2>Fuzzer performance</h2>
+<ul>
+  <li>Config: 4VM/2C/2T/8G</li>
+  <li>Edge coverage: 12% (plateaued after 3 hours)</li>
+  <li>Throughput: 11 syscalls/sec</li>
+  <li><a href="./syzkaller.htm">dashboard</a></li>
+  <li><a href="./stats.htm">graphs</a></li>
+  <li><a href="./cover.htm">coverage (43MB)</a></li>
+</ul>
+<h2>Bug 1. Lost user in chgproccnt</h2>
+<p>A user with multiple effective UIDs (e.g., root) can trigger an unexpected reboot.</p>
+<ul>
+  <li>Apple Silicon: ✅</li>
+  <li>Intel: ✅</li>
+  <li>Vulnerable kernel version: &lt;= xnu-11417.140.69</li>
+  <li>Vulnerable devices: macOS &lt;= 15.6, iOS / iPadOS &lt;= 18.6</li>
+</ul>
+<p>PoC: <a href="./chgproccnt.c">chgproccnt.c</a></p>
+<figure class="video-embed"><video controls preload="metadata" playsinline><source src="chgproccnt.mp4" /></video></figure>
+<p>Panic log:</p>
+<pre><code>panic(cpu 1 caller 0xffffff80204fbc5b): chgproccnt: lost user @kern_proc.c:329
+Panicked task 0xffffffa52a76c980: 3 threads: pid 392: a.out
+Backtrace (CPU 1), panicked thread: 0xffffff96c62e10c8, Frame : Return Address
+0xffffffc9e642fa80 : 0xffffff801ffd9511 mach_kernel : _handle_debugger_trap + 0x4c1
+[snip]
+0xffffffc9e642fe90 : 0xffffff8020507289 mach_kernel : _setreuid + 0x119</code></pre>
+<h3>Apple&#x27;s response</h3>
+<figure class="image-embed"><img src="chgproccnt.png" alt="" loading="lazy" decoding="async" /></figure>
+<h2>Bug 2. Invalid aio</h2>
+<ul>
+  <li>Apple Silicon: ✅</li>
+  <li>Intel: ✅</li>
+  <li>Vulnerable kernel version: &lt;= root:xnu-12377.61.12~1</li>
+  <li>Vulnerable devices: iOS / iPadOS &lt;= 26.2, macOS &lt;= 26.2</li>
+</ul>
+<p>A non-root user can freeze the machine or trigger an unexpected reboot.</p>
+<p>PoC: <a href="./aio.c">aio.c</a></p>
+<figure class="video-embed"><video controls preload="metadata" playsinline><source src="aio.mp4" /></video></figure>
+<figure class="video-embed"><video controls preload="metadata" playsinline><source src="aio_m2.mp4" /></video></figure>
+<pre><code>panic(cpu 0 caller 0xffffff802064f04c): filt_aiotouch: kn 0xffffff9c6c797980 kev 0xfffffffede42be40 (NOT EXPECTED TO BE CALLED!!) @kern_aio.c:2547
+[snip]
+0xfffffffede42bc30 : 0xffffff802098c07d mach_kernel : _panic + 0x81
+0xfffffffede42bd20 : 0xffffff802064f04c mach_kernel : _encode_comp_t + 0x1dc
+0xfffffffede42bd30 : 0xffffff802066dfb7 mach_kernel : _kevent_register + 0x947
+0xfffffffede42be00 : 0xffffff8020672496 mach_kernel : _kevent + 0x466
+0xfffffffede42bef0 : 0xffffff802067208c mach_kernel : _kevent + 0x5c
+0xfffffffede42bf40 : 0xffffff80207f393b mach_kernel : _unix_syscall64 + 0x1eb
+0xfffffffede42bfa0 : 0xffffff80200ebdb6 mach_kernel : _hndl_unix_scall64 + 0x16</code></pre>
+<h3>Apple&#x27;s response</h3>
+<figure class="image-embed"><img src="./aio.png" alt="" loading="lazy" decoding="async" /></figure>
+<h2>Bug 3. Missing a check in bsdthread_ctl() (Development kernel only)</h2>
+<p>A non-root user can trigger an unexpected reboot in *development or debug kernel*.</p>
+<p>PoC: <a href="./bsdthread_ctl.c">bsdthread_ctl.c</a></p>
+<figure class="video-embed"><video controls preload="metadata" playsinline><source src="bsdthread_ctl.mp4" /></video></figure>
+<p>Panic log:</p>
+<pre><code>panic(cpu 1 caller 0xffffff80208b5e57): pthread_workqueue.c:2384 Assertion failed: flags &amp; WORKQ_SET_SELF_QOS_FLAG at 0xffffff802149bb92, registers:
+[snip]
+Panicked task 0xffffff86a13ec740: 3 threads: pid 572: syz-executor
+Backtrace (CPU 1), panicked thread: 0xffffff869a36bd38, Frame : Return Address
+[snip]
+0xffffffd68b68fc70 : 0xffffff80208d74d1 mach_kernel : trap_from_kernel + 0x26
+0xffffffd68b68fc90 : 0xffffff802149bb92 mach_kernel : _bsdthread_ctl + 0x1bb2
+0xffffffd68b68fed0 : 0xffffff8021b21194 mach_kernel : _unix_syscall64 + 0x484
+0xffffffd68b68ffa0 : 0xffffff80208d7916 mach_kernel : _hndl_unix_scall64 + 0x16</code></pre>
+<h3>Apple&#x27;s response</h3>
+<figure class="image-embed"><img src="bsdthread_ctl.png" alt="" loading="lazy" decoding="async" /></figure>
+<h2>Bug 4 and 5</h2>
+<p>A root user can freeze the machine and trigger an unexpected reboot.</p>
+<ul>
+  <li>Apple Silicon: ❌</li>
+  <li>Intel: ✅</li>
+  <li>Vulnerable kernel version: the current version</li>
+  <li>Vulnerable devices: The current Intel macOS</li>
+</ul>
+<p>PoC and a panic log will be opened after the corresponding patch.</p>
+<h2>Known bug rediscovery: Invalid mach_port construction</h2>
+<p>A non-root user can trigger an unexpected reboot. This issue has already been fixed in beta builds before I reported.</p>
+<ul>
+  <li>Apple Silicon: ❓</li>
+  <li>Intel: ✅</li>
+  <li>Vulnerable kernel version: &lt;= xnu-11417.121.6</li>
+  <li>Vulnerable devices: Intel macOS &lt;= 15.5(Sequoia)</li>
+</ul>
+<p>PoC: <a href="./mach_port.c">mach_port.c</a></p>
+<figure class="video-embed"><video controls preload="metadata" playsinline><source src="mach_port.mp4" /></video></figure>
+<p>Panic log:</p>
+<pre><code>panic(cpu 0 caller 0xffffff80208b5e57): mach_port.c:2633 Assertion failed: (options-&gt;flags &amp; [snip]
+Panicked task 0xffffff869c93b7d0: 4 threads: pid 1115: syz-executor
+Backtrace (CPU 0), panicked thread: 0xffffff869e7706f0, Frame : Return Address
+[snip]
+0xffffffeef55cf9d0 : 0xffffff80208d74d1 mach_kernel : trap_from_kernel + 0x26
+0xffffffeef55cf9f0 : 0xffffff80202cd1cd mach_kernel : _mach_port_construct + 0x10cd
+0xffffffeef55cfd30 : 0xffffff80202bd0e4 mach_kernel : __kernelrpc_mach_port_construct_trap + 0x1d4
+0xffffffeef55cfe50 : 0xffffff8020873a4a mach_kernel : _mach_call_munger64 + 0x41a
+0xffffffeef55cffa0 : 0xffffff80208d7936 mach_kernel : _hndl_mach_scall64 + 0x16</code></pre>
+<h3>Apple&#x27;s response</h3>
+<figure class="image-embed"><img src="mach_port.png" alt="" loading="lazy" decoding="async" /></figure>
+<p><a href="./index.html">Return to the index</a></p>
+        </article>
+    </main>
+</body>
+</html>
